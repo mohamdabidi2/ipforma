@@ -214,7 +214,7 @@ const FormationDetails = () => {
                 {formation.thumbnail && (
                   <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden mb-8">
                     <img 
-                      src={formation.thumbnail.startsWith('http') ? formation.thumbnail : `http://localhost:5000/${formation.thumbnail}`}
+                      src={formation.thumbnail.startsWith('http') ? formation.thumbnail : `https://api.formation-ipforma.com/${formation.thumbnail}`}
                       alt={formation.title}
                       className="w-full h-full object-cover"
                     />

@@ -224,7 +224,7 @@ const Formations = () => {
                   <div className="aspect-video bg-gradient-to-br from-blue-500 to-purple-600 relative">
                     {formation.thumbnail ? (
                       <img 
-                        src={formation.thumbnail.startsWith('http') ? formation.thumbnail : `http://localhost:5000/${formation.thumbnail}`}
+                        src={formation.thumbnail.startsWith('http') ? formation.thumbnail : `https://api.formation-ipforma.com/${formation.thumbnail}`}
                         alt={formation.title}
                         className="w-full h-full object-cover"
                       />
