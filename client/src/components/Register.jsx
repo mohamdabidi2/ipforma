@@ -267,7 +267,6 @@ const Register = () => {
                   و{' '}
                   
                     سياسة الخصوصية
-                
                 </label>
               </div>
 
