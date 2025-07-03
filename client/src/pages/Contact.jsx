@@ -12,7 +12,9 @@ import {
   Twitter,
   Instagram,
   Linkedin,
-  Send
+  Send,
+  FileText,
+  Building
 } from 'lucide-react';
 
 const Contact = () => {
@@ -39,7 +41,7 @@ const Contact = () => {
     
     // Simulate form submission
     setTimeout(() => {
-      alert('Message envoyé avec succès! Nous vous répondrons dans les plus brefs délais.');
+      alert('تم إرسال الرسالة بنجاح! سنرد عليك في أقرب وقت ممكن.');
       setFormData({
         name: '',
         email: '',
@@ -54,26 +56,47 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: MapPin,
-      title: "Adresse",
-      details: ["IPFORMA avenue Carthage beb jebli immeuble Ribat el médina Sfax - ", "en 5 éme étage bureau n°509 - Bloc A ou D , Sfax, Tunisia"],
+      title: "العنوان الأول",
+      details: [
+        "صفاقس باب الجبلي عمارة رباط المدينة بجانب صفاقس 2000 قبالة الكاس المدرج",
+        "بلوك 'أ' أو 'د'، الطابق الخامس، مكتب رقم 509"
+      ],
       color: "text-blue-600"
     },
     {
-      icon: Phone,
-      title: "Téléphone",
-      details: ["+216 95 606 361"],
+      icon: MapPin,
+      title: "العنوان الثاني",
+      details: [
+        "شارع 5 أوت صفاقس نهج 19 جويلية جانب نزل بيزنس",
+        "في عمارة العفاس الطابق الثاني فوق مركز الأعمال"
+      ],
       color: "text-green-600"
     },
     {
-      icon: Mail,
-      title: "Email",
-      details: [ "ipforma.sfax@gmail.com"],
+      icon: Phone,
+      title: "الهاتف",
+      details: [
+        "74.400.692",
+        "95.606.361", 
+        "55.547.993",
+        "29.938.313",
+        "74.206.216"
+      ],
       color: "text-purple-600"
     },
     {
+      icon: Mail,
+      title: "البريد الإلكتروني",
+      details: ["ipforma.sfax1@gmail.com"],
+      color: "text-red-600"
+    },
+    {
       icon: Clock,
-      title: "Horaires",
-      details: ["Lun - Ven: 8h00 - 18h00", "Sam: 9h00 - 13h00"],
+      title: "ساعات العمل",
+      details: [
+        "الاثنين - الجمعة: 8:00 صباحًا - 5:00 مساءً", 
+        "السبت: 8:00 صباحًا - 2:00 ظهرًا"
+      ],
       color: "text-orange-600"
     }
   ];
@@ -86,17 +109,16 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" dir="rtl" style={{ fontFamily: 'Cairo, Noto Sans Arabic, sans-serif' }}>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-16">
+      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-16 animate-fade-in">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-              Contactez-<span className="text-yellow-400">nous</span>
+            <h1 className="text-4xl lg:text-5xl font-bold mb-6 animate-slide-up">
+              اتصل <span className="text-yellow-400">بنا</span>
             </h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Nous sommes là pour répondre à toutes vos questions et vous accompagner 
-              dans votre parcours de formation professionnelle.
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto animate-slide-up animation-delay-200">
+              نحن هنا للإجابة على جميع أسئلتك ودعمك في مسيرتك التدريبية المهنية. تواصل معنا وابدأ رحلة التميز.
             </p>
           </div>
         </div>
@@ -107,17 +129,17 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div>
-              <Card>
+            <div className="animate-slide-up">
+              <Card className="hover-lift">
                 <CardContent className="p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                    Envoyez-nous un message
+                    أرسل لنا رسالة
                   </h2>
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form action="https://formsubmit.co/ipforma.sfax1@gmail.com" onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                          Nom complet *
+                          الاسم الكامل *
                         </label>
                         <Input
                           id="name"
@@ -126,12 +148,13 @@ const Contact = () => {
                           required
                           value={formData.name}
                           onChange={handleInputChange}
-                          placeholder="Votre nom complet"
+                          placeholder="اسمك الكامل"
+                          className="transition-all duration-300 focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                          Email *
+                          البريد الإلكتروني *
                         </label>
                         <Input
                           id="email"
@@ -140,7 +163,8 @@ const Contact = () => {
                           required
                           value={formData.email}
                           onChange={handleInputChange}
-                          placeholder="votre@email.com"
+                          placeholder="your@email.com"
+                          className="transition-all duration-300 focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
@@ -148,7 +172,7 @@ const Contact = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                          Téléphone
+                          الهاتف
                         </label>
                         <Input
                           id="phone"
@@ -157,11 +181,12 @@ const Contact = () => {
                           value={formData.phone}
                           onChange={handleInputChange}
                           placeholder="+216 XX XXX XXX"
+                          className="transition-all duration-300 focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                       <div>
                         <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                          Sujet *
+                          الموضوع *
                         </label>
                         <Input
                           id="subject"
@@ -170,14 +195,15 @@ const Contact = () => {
                           required
                           value={formData.subject}
                           onChange={handleInputChange}
-                          placeholder="Sujet de votre message"
+                          placeholder="موضوع رسالتك"
+                          className="transition-all duration-300 focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
 
                     <div>
                       <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                        Message *
+                        الرسالة *
                       </label>
                       <Textarea
                         id="message"
@@ -186,21 +212,25 @@ const Contact = () => {
                         rows={6}
                         value={formData.message}
                         onChange={handleInputChange}
-                        placeholder="Décrivez votre demande en détail..."
+                        placeholder="صف طلبك بالتفصيل..."
+                        className="transition-all duration-300 focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
 
                     <Button 
                       type="submit" 
-                      className="w-full" 
+                      className="w-full hover-lift transition-all duration-300" 
                       size="lg"
                       disabled={submitting}
                     >
                       {submitting ? (
-                        'Envoi en cours...'
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white ml-2"></div>
+                          جاري الإرسال...
+                        </div>
                       ) : (
                         <>
-                          Envoyer le message
+                          إرسال الرسالة
                           <Send className="ml-2 h-4 w-4" />
                         </>
                       )}
@@ -211,27 +241,27 @@ const Contact = () => {
             </div>
 
             {/* Contact Information */}
-            <div className="space-y-8">
+            <div className="space-y-8 animate-slide-up animation-delay-200">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Informations de contact
+                  معلومات الاتصال
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                   {contactInfo.map((info, index) => {
                     const Icon = info.icon;
                     return (
-                      <Card key={index} className="hover:shadow-md transition-shadow">
+                      <Card key={index} className="hover-lift transition-all duration-300 animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
                         <CardContent className="p-6">
-                          <div className="flex items-start space-x-4">
-                            <div className={`flex-shrink-0 ${info.color}`}>
+                          <div className="flex items-start">
+                            <div className={`flex-shrink-0 ${info.color} ml-4`}>
                               <Icon className="h-6 w-6" />
                             </div>
-                            <div>
-                              <h3 className="font-semibold text-gray-900 mb-2">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 mb-3 text-lg">
                                 {info.title}
                               </h3>
                               {info.details.map((detail, idx) => (
-                                <p key={idx} className="text-gray-600 text-sm">
+                                <p key={idx} className="text-gray-600 mb-2 leading-relaxed">
                                   {detail}
                                 </p>
                               ))}
@@ -244,7 +274,42 @@ const Contact = () => {
                 </div>
               </div>
 
-             
+              {/* Company Registration Info */}
+              <div className="grid grid-cols-1 gap-6">
+                <Card className="hover-lift transition-all duration-300 animate-slide-up animation-delay-600">
+                  <CardContent className="p-6">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 text-blue-600 ml-4">
+                        <FileText className="h-6 w-6" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-3 text-lg">
+                          المعرف الضريبي
+                        </h3>
+                        <p className="text-gray-600 font-mono text-lg">1516179/A/A/P/000</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="hover-lift transition-all duration-300 animate-slide-up animation-delay-700">
+                  <CardContent className="p-6">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 text-green-600 ml-4">
+                        <Building className="h-6 w-6" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-3 text-lg">
+                          رقم التسجيل
+                        </h3>
+                        <p className="text-gray-600 font-mono text-lg">61-382-20</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              
             </div>
           </div>
         </div>
@@ -253,60 +318,56 @@ const Contact = () => {
       {/* FAQ Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-slide-up">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Questions fréquemment posées
+              الأسئلة الشائعة
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Trouvez rapidement les réponses aux questions les plus courantes.
+              ابحث بسرعة عن إجابات للأسئلة الأكثر شيوعًا حول تدريباتنا وخدماتنا
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card>
+            <Card className="hover-lift transition-all duration-300 animate-slide-up animation-delay-100">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-gray-900 mb-3">
-                  Comment puis-je m'inscrire à une formation ?
+                  كيف يمكنني التسجيل في دورة تدريبية؟
                 </h3>
                 <p className="text-gray-600">
-                  Vous pouvez vous inscrire directement en ligne en cliquant sur "S'inscrire" 
-                  sur la page de la formation qui vous intéresse, ou en nous contactant par téléphone.
+                  يمكنك التسجيل مباشرة عبر الإنترنت بالنقر على 'تسجيل' في صفحة الدورة التدريبية التي تهمك، أو عن طريق الاتصال بنا عبر الهاتف أو زيارة مكاتبنا.
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover-lift transition-all duration-300 animate-slide-up animation-delay-200">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-gray-900 mb-3">
-                  Proposez-vous des formations sur mesure ?
+                  هل تقدمون تدريبات مخصصة للشركات؟
                 </h3>
                 <p className="text-gray-600">
-                  Oui, nous développons des programmes de formation personnalisés pour répondre 
-                  aux besoins spécifiques des entreprises et des groupes.
+                  نعم، نقوم بتطوير برامج تدريب مخصصة لتلبية الاحتياجات المحددة للشركات والمجموعات مع إمكانية التدريب في موقع العمل.
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover-lift transition-all duration-300 animate-slide-up animation-delay-300">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-gray-900 mb-3">
-                  Les formations sont-elles certifiantes ?
+                  هل التدريبات معتمدة؟
                 </h3>
                 <p className="text-gray-600">
-                  Toutes nos formations délivrent un certificat de fin de formation reconnu. 
-                  Certaines formations offrent également des certifications professionnelles.
+                  جميع تدريباتنا تمنح شهادة إتمام تدريب معترف بها محليًا ودوليًا. بعض التدريبات تقدم أيضًا شهادات مهنية متخصصة.
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover-lift transition-all duration-300 animate-slide-up animation-delay-400">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-gray-900 mb-3">
-                  Quels sont les modes de paiement acceptés ?
+                  ما هي طرق الدفع المقبولة؟
                 </h3>
                 <p className="text-gray-600">
-                  Nous acceptons les paiements par virement bancaire, chèque, et espèces. 
-                  Des facilités de paiement en plusieurs tranches sont également disponibles.
+                  نقبل الدفع عن طريق التحويل المصرفي، الشيك، والنقد. تتوفر أيضًا تسهيلات الدفع على أقساط للدورات طويلة المدى.
                 </p>
               </CardContent>
             </Card>

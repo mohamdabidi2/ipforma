@@ -32,7 +32,7 @@ const formationSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   durationWeeks: { type: Number, required: true },
   estimatedHours: { type: String, required: true },
-  type: { type: String, enum: ['online', 'presentielle', 'hybrid'], required: true },
+  type: { type: String, enum: ['sociétés','passagers'], required: true },
   category: { type: String, required: true },
   categoryPrefix: { type: String },
   level: { type: String, enum: ['beginner', 'intermediate', 'advanced'], default: 'beginner' },

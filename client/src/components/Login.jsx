@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    phone: '',
+    phone: '+216',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +24,22 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
+    setError('');
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    if (value.startsWith('+216') || value === '') {
+      setFormData(prev => ({
+        ...prev,
+        phone: value
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        phone: '+216' + value
+      }));
+    }
     setError('');
   };
 
@@ -44,7 +60,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style={{ fontFamily: 'Cairo, Noto Sans Arabic, sans-serif', direction: 'rtl' }}>
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
@@ -53,12 +69,12 @@ const Login = () => {
             
           </div>
           <h2 className="text-3xl font-bold text-gray-900">
-            Connexion à votre compte
+            تسجيل الدخول إلى حسابك
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Ou{' '}
+            أو{' '}
             <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-              créez un nouveau compte
+              إنشاء حساب جديد
             </Link>
           </p>
         </div>
@@ -66,7 +82,7 @@ const Login = () => {
         {/* Login Form */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-center">Se connecter</CardTitle>
+            <CardTitle className="text-center">تسجيل الدخول</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -77,21 +93,21 @@ const Login = () => {
               )}
 
               <div>
-                <Label htmlFor="phone">Numéro de téléphone</Label>
+                <Label htmlFor="phone">رقم الهاتف</Label>
                 <Input
                   id="phone"
                   name="phone"
                   type="tel"
                   required
                   value={formData.phone}
-                  onChange={handleInputChange}
+                  onChange={handlePhoneChange}
                   placeholder="+216 XX XXX XXX"
                   className="mt-1"
                 />
               </div>
 
               <div>
-                <Label htmlFor="password">Mot de passe</Label>
+                <Label htmlFor="password">كلمة المرور</Label>
                 <div className="relative mt-1">
                   <Input
                     id="password"
@@ -100,7 +116,7 @@ const Login = () => {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Votre mot de passe"
+                    placeholder="كلمة المرور الخاصة بك"
                     className="pr-10"
                   />
                   <button
@@ -126,7 +142,7 @@ const Login = () => {
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                    Se souvenir de moi
+                    تذكرني
                   </label>
                 </div>
 
@@ -139,7 +155,7 @@ const Login = () => {
                 size="lg"
                 disabled={loading}
               >
-                {loading ? 'Connexion en cours...' : 'Se connecter'}
+                {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
               </Button>
             </form>
 
@@ -149,15 +165,15 @@ const Login = () => {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Ou</span>
+                  <span className="px-2 bg-white text-gray-500">أو</span>
                 </div>
               </div>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Pas encore de compte ?{' '}
+                  ليس لديك حساب بعد؟{' '}
                   <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                    Inscrivez-vous maintenant
+                    سجل الآن
                   </Link>
                 </p>
               </div>
@@ -172,4 +188,5 @@ const Login = () => {
 };
 
 export default Login;
+
 

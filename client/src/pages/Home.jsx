@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
 import { 
   Users, 
   BookOpen, 
@@ -10,42 +11,48 @@ import {
   Star,
   ArrowRight,
   CheckCircle,
-  Play
+  Play,
+  Building,
+  User,
+  Shield,
+  Scissors
 } from 'lucide-react';
 import api from '../services/api';
 
 const Home = () => {
   const [stats, setStats] = useState({
     teachers: 20,
-    courses: 32,
-    experience: 10,
-    users: 1200
+    courses: 75,
+    experience: 10
   });
   const [latestFormations, setLatestFormations] = useState([]);
   const [testimonials] = useState([
     {
       id: 1,
-      name: "Ahmed Ben Ali",
-      role: "Développeur Web",
-      content: "Excellente formation en développement web. Les instructeurs sont très compétents et le contenu est à jour.",
+      name: "محمد الحارثي",
+      role: "أخصائي أمن سيبراني",
+      content: "تدريب ممتاز في الأمن السيبراني. المدربون أكفاء للغاية والمحتوى محدث ومواكب لأحدث التهديدات والحلول الأمنية.",
       rating: 5,
-      image: "/api/placeholder/60/60"
+      letter: "م",
+      type: "passagers"
     },
     {
       id: 2,
-      name: "Fatma Trabelsi",
-      role: "Designer UX/UI",
-      content: "J'ai beaucoup appris grâce aux formations d'IPforma. L'approche pratique m'a permis de décrocher un emploi rapidement.",
+      name: "شركة الحماية : Ultra",
+      role: "مدير الأمن",
+      content: "تدريب متميز لفريق الأمن. النهج المخصص للشركات ساعدنا في تطوير مهارات موظفينا في مجال الأمن والحماية بشكل فعال.",
       rating: 5,
-      image: "/api/placeholder/60/60"
+      letter: "ش",
+      type: "sociétés"
     },
     {
       id: 3,
-      name: "Mohamed Sassi",
-      role: "Data Analyst",
-      content: "Formation complète et bien structurée. Je recommande vivement IPforma pour tous ceux qui veulent se former.",
+      name: "سارة بن يوسف",
+      role: "مصففة شعر محترفة",
+      content: "لقد تعلمت الكثير بفضل تدريبات التجميل والتصفيف في IPforma. النهج العملي والتطبيقي سمح لي بفتح صالوني الخاص بنجاح.",
       rating: 5,
-      image: "/api/placeholder/60/60"
+      letter: "س",
+      type: "passagers"
     }
   ]);
 
@@ -66,45 +73,91 @@ const Home = () => {
   const fetchLatestFormations = async () => {
     try {
       const response = await api.get('/formations');
-      setLatestFormations(response.data.slice(0, 3));
+      const formations = response.data.slice(0, 6);
+      setLatestFormations(formations);
     } catch (error) {
       console.error('Error fetching formations:', error);
     }
   };
 
+  const getTypeInfo = (type) => {
+    switch (type) {
+      case 'sociétés':
+        return {
+          label: 'للشركات',
+          icon: <Building className="h-4 w-4" />,
+          color: 'bg-blue-100 text-blue-800'
+        };
+      case 'passagers':
+        return {
+          label: 'للأفراد',
+          icon: <User className="h-4 w-4" />,
+          color: 'bg-green-100 text-green-800'
+        };
+      default:
+        return {
+          label: type,
+          icon: <BookOpen className="h-4 w-4" />,
+          color: 'bg-gray-100 text-gray-800'
+        };
+    }
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" dir="rtl" style={{ fontFamily: 'Cairo, Noto Sans Arabic, sans-serif' }}>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white">
+      <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white animate-fade-in">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <div className="animate-slide-up">
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
-                Développez vos <span className="text-yellow-400">compétences</span> avec IPforma
+                طور <span className="text-yellow-400">مهاراتك</span> مع IPforma
               </h1>
               <p className="text-xl lg:text-2xl text-blue-100 mb-8">
-                Centre de formation professionnel offrant des formations de qualité 
-                pour booster votre carrière et atteindre vos objectifs.
+                مركز تدريب مهني يقدم تدريبات عالية الجودة للشركات والأفراد لتعزيز المسيرة المهنية وتحقيق الأهداف بتميز ونجاح.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              
+              {/* Training Types Highlight */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover-scale transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <Building className="h-6 w-6 text-yellow-400 ml-2" />
+                    <span className="font-semibold text-lg">تدريب الشركات</span>
+                  </div>
+                  <p className="text-blue-100 text-sm">برامج مخصصة للمؤسسات والشركات</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover-scale transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <User className="h-6 w-6 text-yellow-400 ml-2" />
+                    <span className="font-semibold text-lg">تدريب الأفراد</span>
+                  </div>
+                  <p className="text-blue-100 text-sm">برامج شخصية للمتخصصين والأفراد</p>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animation-delay-200">
                 <Link to="/formations">
-                  <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold">
-                    Découvrir nos formations
+                  <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold hover-lift transition-all duration-300">
+                    اكتشف تدريباتنا
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-              
+                <Link to="/contact">
+                  <Button size="lg" variant="outline" style={{color:'black'}} className="border-white text-white hover:bg-white hover:text-blue-600 hover-lift transition-all duration-300">
+                    طلب تدريب مخصص
+                  </Button>
+                </Link>
               </div>
             </div>
-            <div className="hidden lg:block">
+            <div className="hidden lg:block animate-scale-in animation-delay-400">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg transform rotate-6"></div>
-                <div className="relative bg-white rounded-lg p-8 shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg transform rotate-6 animate-pulse-custom"></div>
+                <div className="relative bg-white rounded-lg p-8 shadow-2xl hover-lift">
                   <div className="text-center">
-                    <img src="../logo.png" alt="" />
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Formation de qualité</h3>
-                    <p className="text-gray-600">Apprenez avec les meilleurs instructeurs</p>
+                    <img src="../logo.png" alt="IPforma" className="mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">تدريب عالي الجودة</h3>
+                    <p className="text-gray-600">تعلم مع أفضل المدربين والخبراء</p>
                   </div>
                 </div>
               </div>
@@ -116,100 +169,208 @@ const Home = () => {
       {/* Stats Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="text-center animate-slide-up">
+              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 hover-scale transition-transform duration-300">
                 <Users className="h-8 w-8 text-blue-600" />
               </div>
-              <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stats.teachers}+</div>
-              <div className="text-gray-600">Formateurs experts</div>
+              <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2 animate-pulse-custom">{stats.teachers}+</div>
+              <div className="text-gray-600">مدربون خبراء</div>
             </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+            <div className="text-center animate-slide-up animation-delay-100">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 hover-scale transition-transform duration-300">
                 <BookOpen className="h-8 w-8 text-green-600" />
               </div>
-              <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stats.courses}+</div>
-              <div className="text-gray-600">Formations disponibles</div>
+              <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2 animate-pulse-custom">75+</div>
+              <div className="text-gray-600">تدريبات متاحة</div>
             </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-yellow-100 rounded-full mx-auto mb-4">
+            <div className="text-center animate-slide-up animation-delay-200">
+              <div className="flex items-center justify-center w-16 h-16 bg-yellow-100 rounded-full mx-auto mb-4 hover-scale transition-transform duration-300">
                 <Calendar className="h-8 w-8 text-yellow-600" />
               </div>
-              <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stats.experience}+</div>
-              <div className="text-gray-600">Années d'expérience</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4">
-                <Award className="h-8 w-8 text-purple-600" />
-              </div>
-              <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stats.users}+</div>
-              <div className="text-gray-600">Étudiants formés</div>
+              <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2 animate-pulse-custom">{stats.experience}+</div>
+              <div className="text-gray-600">سنوات الخبرة</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Latest Formations Section */}
+      {/* Training Types Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-slide-up">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Dernières formations ajoutées
+              نوعان من التدريب لتلبية احتياجاتك
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Découvrez nos formations les plus récentes et restez à jour avec les dernières technologies
+              نقدم حلول تدريبية متخصصة للشركات والأفراد مع برامج مصممة خصيصاً لكل فئة
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Corporate Training */}
+            <Card className="p-8 hover-lift transition-all duration-300 animate-slide-up border-2 border-blue-200 hover:border-blue-400">
+              <CardContent className="p-0">
+                <div className="flex items-center mb-6">
+                  <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mr-4">
+                    <Building className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">تدريب الشركات</h3>
+                    <p className="text-blue-600 font-semibold">حلول مؤسسية متكاملة</p>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  برامج تدريبية مخصصة للشركات والمؤسسات لتطوير مهارات الفرق وتحسين الأداء المؤسسي العام.
+                </p>
+                
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 ml-2" />
+                    <span className="text-gray-700">تدريب مخصص حسب احتياجات الشركة</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 ml-2" />
+                    <span className="text-gray-700">إمكانية التدريب في مقر الشركة</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 ml-2" />
+                    <span className="text-gray-700">شهادات معتمدة لجميع المشاركين</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 ml-2" />
+                    <span className="text-gray-700">متابعة ما بعد التدريب</span>
+                  </div>
+                </div>
+                
+                <Link to="/formations?type=sociétés">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 hover-lift transition-all duration-300">
+                    <Building className="ml-2 h-5 w-5" />
+                    استكشف تدريبات الشركات
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* Individual Training */}
+            <Card className="p-8 hover-lift transition-all duration-300 animate-slide-up animation-delay-200 border-2 border-green-200 hover:border-green-400">
+              <CardContent className="p-0">
+                <div className="flex items-center mb-6">
+                  <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mr-4">
+                    <User className="h-8 w-8 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">تدريب الأفراد</h3>
+                    <p className="text-green-600 font-semibold">تطوير مهني شخصي</p>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  برامج فردية للأشخاص الراغبين في تطوير مهاراتهم الشخصية والمهنية وتحقيق أهدافهم المهنية.
+                </p>
+                
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 ml-2" />
+                    <span className="text-gray-700">تدريب شخصي مكثف</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 ml-2" />
+                    <span className="text-gray-700">مرونة في المواعيد</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 ml-2" />
+                    <span className="text-gray-700">متابعة فردية مع المدرب</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 ml-2" />
+                    <span className="text-gray-700">شهادة معتمدة شخصية</span>
+                  </div>
+                </div>
+                
+                <Link to="/formations?type=passagers">
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 hover-lift transition-all duration-300">
+                    <User className="ml-2 h-5 w-5" />
+                    استكشف التدريبات الفردية
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Formations Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 animate-slide-up">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              أحدث التدريبات المضافة
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              اكتشف أحدث تدريباتنا المضافة للشركات والأفراد وابقَ على اطلاع بأحدث التقنيات والمهارات المطلوبة في السوق
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {latestFormations.map((formation) => (
-              <Card key={formation._id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video bg-gradient-to-br from-blue-500 to-purple-600 relative">
-                  {formation.thumbnail && formation.thumbnail ? (
-                    <img 
-                      src={`https://api.formation-ipforma.com/${formation.thumbnail}`}
-                      alt={formation.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <BookOpen className="h-16 w-16 text-white" />
-                    </div>
-                  )}
-                  <div className="absolute top-4 right-4">
-                    <span className="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-semibold">
-                      {formation.type}
-                    </span>
-                  </div>
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{formation.title}</h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2">{formation.description}</p>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold text-blue-600">{formation.price} DT</span>
-                    <div className="flex items-center text-yellow-500">
-                      <Star className="h-4 w-4 fill-current" />
-                      <Star className="h-4 w-4 fill-current" />
-                      <Star className="h-4 w-4 fill-current" />
-                      <Star className="h-4 w-4 fill-current" />
-                      <Star className="h-4 w-4 fill-current" />
+            {latestFormations.map((formation, index) => {
+              const typeInfo = getTypeInfo(formation.type);
+              return (
+                <Card key={formation._id} className="overflow-hidden hover-lift transition-all duration-300 animate-slide-up border-2 hover:border-blue-300" style={{ animationDelay: `${index * 100}ms` }}>
+                  <div className="aspect-video bg-gradient-to-br from-blue-500 to-purple-600 relative">
+                    {formation.thumbnail && formation.thumbnail ? (
+                      <img 
+                        src={`https://api.formation-ipforma.com/${formation.thumbnail}`}
+                        alt={formation.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <BookOpen className="h-16 w-16 text-white" />
+                      </div>
+                    )}
+                    <div className="absolute top-4 left-4">
+                      <Badge className={`${typeInfo.color} shadow-lg flex items-center gap-1`}>
+                        {typeInfo.icon}
+                        {typeInfo.label}
+                      </Badge>
                     </div>
                   </div>
-                  <Link to={`/formations/${formation._id}`}>
-                    <Button className="w-full">
-                      Voir les détails
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{formation.title}</h3>
+                    <p className="text-gray-600 mb-4 line-clamp-2">{formation.description}</p>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-2xl font-bold text-blue-600">
+                        {formation.price === 0 ? 'مجاني' : `${formation.price} د.ت`}
+                        {formation.type === 'sociétés' && formation.price > 0 && (
+                          <span className="text-sm text-gray-500 block">قابل للتفاوض</span>
+                        )}
+                      </span>
+                      <div className="flex items-center text-yellow-500">
+                        <Star className="h-4 w-4 fill-current" />
+                        <Star className="h-4 w-4 fill-current" />
+                        <Star className="h-4 w-4 fill-current" />
+                        <Star className="h-4 w-4 fill-current" />
+                        <Star className="h-4 w-4 fill-current" />
+                      </div>
+                    </div>
+                    <Link to={`/formations/${formation._id}`}>
+                      <Button className="w-full hover-lift transition-all duration-300">
+                        {formation.type === 'sociétés' ? 'طلب عرض سعر' : 'عرض التفاصيل'}
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-12 animate-slide-up animation-delay-400">
             <Link to="/formations">
-              <Button size="lg" variant="outline">
-                Voir toutes les formations
+              <Button size="lg" variant="outline" className="hover-lift transition-all duration-300">
+                عرض جميع التدريبات
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -218,41 +379,48 @@ const Home = () => {
       </section>
 
       {/* Student Feedback Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-slide-up">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Ce que disent nos étudiants
+              شهادات عملائنا
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Découvrez les témoignages de nos étudiants qui ont transformé leur carrière grâce à nos formations
+              اكتشف شهادات الشركات والأفراد الذين غيروا مسيرتهم المهنية وحققوا أحلامهم بفضل تدريباتنا المتميزة في مختلف المجالات
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="p-6">
-                <CardContent className="p-0">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-500 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-gray-600 mb-6 italic">"{testimonial.content}"</p>
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                      <span className="text-blue-600 font-semibold">
-                        {testimonial.name.split(' ').map(n => n[0]).join('')}
-                      </span>
+            {testimonials.map((testimonial, index) => {
+              const typeInfo = getTypeInfo(testimonial.type);
+              return (
+                <Card key={testimonial.id} className="p-6 hover-lift transition-all duration-300 animate-slide-up border-2 hover:border-blue-300" style={{ animationDelay: `${index * 100}ms` }}>
+                  <CardContent className="p-0">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="h-5 w-5 text-yellow-500 fill-current" />
+                        ))}
+                      </div>
+                      <Badge className={`${typeInfo.color} flex items-center gap-1`}>
+                        {typeInfo.icon}
+                        {typeInfo.label}
+                      </Badge>
                     </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                      <div className="text-sm text-gray-600">{testimonial.role}</div>
+                    <p className="text-gray-600 mb-6 italic leading-relaxed">"{testimonial.content}"</p>
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center ml-4 text-white font-bold text-lg hover-scale transition-transform duration-300">
+                        {testimonial.letter}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                        <div className="text-sm text-gray-600">{testimonial.role}</div>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -260,25 +428,32 @@ const Home = () => {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-            Rejoignez la plus grande plateforme d'apprentissage aujourd'hui
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-            Commencez votre parcours d'apprentissage dès maintenant et transformez votre carrière 
-            avec nos formations professionnelles de haute qualité.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register">
-              <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold">
-                Commencer maintenant
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link to="/formations">
-              <Button variant="outline" size="lg" className="border-white text-blue-600  hover:bg-white hover:text-blue-600">
-                Explorer les formations
-              </Button>
-            </Link>
+          <div className="animate-slide-up">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+              انضم إلى أكبر منصة تعليمية اليوم
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+              ابدأ رحلة التعلم الآن وحوّل مسيرتك المهنية مع تدريباتنا المهنية عالية الجودة والمعتمدة دوليًا للشركات والأفراد.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up animation-delay-200">
+              <Link to="/contact">
+                <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold hover-lift transition-all duration-300">
+                  <Building className="ml-2 h-5 w-5" />
+                  طلب تدريب للشركة
+                </Button>
+              </Link>
+              <Link to="/formations">
+                <Button style={{color:'black'}} variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600 hover-lift transition-all duration-300">
+                  <User className="ml-2 h-5 w-5"style={{color:'black'}} />
+                  تدريب فردي
+                </Button>
+              </Link>
+              <Link to="/formations">
+                <Button style={{color:'black'}} variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600 hover-lift transition-all duration-300">
+                  استكشف جميع التدريبات
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

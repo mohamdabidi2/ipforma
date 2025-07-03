@@ -47,7 +47,9 @@ import {
   Target,
   Award,
   Bookmark,
-  UserPlus
+  UserPlus,
+  Building,
+  User
 } from 'lucide-react';
 import api from '../../services/api';
 
@@ -82,6 +84,7 @@ const AdminFormationManagement = () => {
     { id: 'health', name: 'Santé', prefix: 'HLTH', color: 'bg-teal-500', icon: '🏥' },
     { id: 'finance', name: 'Finance', prefix: 'FIN', color: 'bg-yellow-500', icon: '💰' },
     { id: 'education', name: 'Éducation', prefix: 'EDU', color: 'bg-indigo-500', icon: '📚' },
+    { id: 'security', name: 'Sécurité au travail', prefix: 'SEC', color: 'bg-red-600', icon: '🛡️' },
     { id: 'other', name: 'Autre', prefix: 'OTHR', color: 'bg-gray-500', icon: '❓' }
   ];
   
@@ -90,36 +93,34 @@ const AdminFormationManagement = () => {
     description: '',
     price: '',
     durationWeeks: '',
-    type: 'online',
+    estimatedHours: '',
+    type: 'sociétés', // Changed default to 'sociétés'
     category: '',
     categoryPrefix: '',
-    level: 'beginner',
+    level: 'intermediate',
     maxStudents: '',
     prerequisites: '',
     objectives: '',
     isActive: true,
     tags: [],
     thumbnail: '',
-    difficulty: 1,
-    estimatedHours: ''
+    difficulty: 3,
+    formationCode: ''
   });
 
   const [contentForm, setContentForm] = useState({
-    chapters: [
+    content: [
       {
-        id: Date.now(),
+        id: 1,
         title: '',
         description: '',
         order: 1,
-        isExpanded: true,
         lessons: [
           {
-            id: Date.now(),
+            id: 1,
             title: '',
             content: '',
             type: 'text',
-            url: '',
-            duration: '',
             order: 1,
             isCompleted: false,
             resources: []
@@ -209,6 +210,11 @@ const AdminFormationManagement = () => {
     setFormationForm({ ...formationForm, thumbnail: '' });
   };
 
+  const generateFormationCode = (categoryPrefix) => {
+    const timestamp = Date.now().toString().slice(-6);
+    return `${categoryPrefix || 'GEN'}-${timestamp}`;
+  };
+
   const handleCreateFormation = async (e) => {
     e.preventDefault();
     try {
@@ -221,15 +227,22 @@ const AdminFormationManagement = () => {
       }
 
       const selectedCat = categories.find(cat => cat.id === formationForm.category);
+      const formationCode = generateFormationCode(selectedCat?.prefix);
+      
       const formationData = {
         ...formationForm,
         thumbnail: thumbnailPath,
-        categoryPrefix: selectedCat?.prefix || '',
-        formationCode: `${selectedCat?.prefix || 'GEN'}-${Date.now().toString().slice(-6)}`
+        categoryPrefix: selectedCat?.prefix || 'GEN',
+        formationCode: formationCode,
+        tags: Array.isArray(formationForm.tags) ? formationForm.tags : [],
+        price: parseFloat(formationForm.price) || 0,
+        durationWeeks: parseInt(formationForm.durationWeeks) || 1,
+        maxStudents: parseInt(formationForm.maxStudents) || 20,
+        difficulty: parseInt(formationForm.difficulty) || 3
       };
       
       const response = await api.post('/formations', formationData);
-      setFormations([...formations, response.data.formation]);
+      setFormations([...formations, response.data]);
       setShowCreateModal(false);
       resetForm();
       alert('Formation créée avec succès');
@@ -252,12 +265,17 @@ const AdminFormationManagement = () => {
 
       const updatedFormationData = {
         ...formationForm,
-        thumbnail: thumbnailPath
+        thumbnail: thumbnailPath,
+        tags: Array.isArray(formationForm.tags) ? formationForm.tags : [],
+        price: parseFloat(formationForm.price) || 0,
+        durationWeeks: parseInt(formationForm.durationWeeks) || 1,
+        maxStudents: parseInt(formationForm.maxStudents) || 20,
+        difficulty: parseInt(formationForm.difficulty) || 3
       };
 
       const response = await api.put(`/formations/${selectedFormation._id}`, updatedFormationData);
       setFormations(formations.map(formation => 
-        formation._id === selectedFormation._id ? response.data.formation : formation
+        formation._id === selectedFormation._id ? response.data : formation
       ));
       setShowEditModal(false);
       resetForm();
@@ -300,9 +318,21 @@ const AdminFormationManagement = () => {
   const handleUpdateContent = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/formations/${selectedFormation._id}/content`, contentForm);
+      const contentData = {
+        content: contentForm.content.map((module, index) => ({
+          ...module,
+          order: index + 1,
+          lessons: module.lessons.map((lesson, lessonIndex) => ({
+            ...lesson,
+            order: lessonIndex + 1
+          }))
+        }))
+      };
+      
+      await api.put(`/formations/${selectedFormation._id}/content`, contentData);
       setShowContentModal(false);
       alert('Contenu mis à jour avec succès');
+      fetchFormations(); // Refresh formations to get updated content
     } catch (error) {
       console.error('Error updating content:', error);
       alert('Erreur lors de la mise à jour du contenu');
@@ -326,22 +356,23 @@ const AdminFormationManagement = () => {
   const openEditModal = (formation) => {
     setSelectedFormation(formation);
     setFormationForm({
-      title: formation.title,
-      description: formation.description,
-      price: formation.price,
-      durationWeeks: formation.durationWeeks,
-      type: formation.type,
-      category: formation.category,
-      categoryPrefix: formation.categoryPrefix,
-      level: formation.level,
-      maxStudents: formation.maxStudents,
-      prerequisites: formation.prerequisites,
-      objectives: formation.objectives,
-      isActive: formation.isActive,
+      title: formation.title || '',
+      description: formation.description || '',
+      price: formation.price || '',
+      durationWeeks: formation.durationWeeks || '',
+      estimatedHours: formation.estimatedHours || '',
+      type: formation.type || 'sociétés',
+      category: formation.category || '',
+      categoryPrefix: formation.categoryPrefix || '',
+      level: formation.level || 'intermediate',
+      maxStudents: formation.maxStudents || '',
+      prerequisites: formation.prerequisites || '',
+      objectives: formation.objectives || '',
+      isActive: formation.isActive !== false,
       tags: formation.tags || [],
       thumbnail: formation.thumbnail || '',
-      difficulty: formation.difficulty || 1,
-      estimatedHours: ''
+      difficulty: formation.difficulty || 3,
+      formationCode: formation.formationCode || ''
     });
     
     // Set image preview if thumbnail exists
@@ -354,8 +385,28 @@ const AdminFormationManagement = () => {
 
   const openContentModal = (formation) => {
     setSelectedFormation(formation);
-    // Use the content directly from the formation object if it exists, otherwise initialize with an empty chapters array
-    setContentForm({ chapters: formation.content || [] });
+    // Use the content directly from the formation object if it exists, otherwise initialize with default structure
+    setContentForm({ 
+      content: formation.content && formation.content.length > 0 ? formation.content : [
+        {
+          id: 1,
+          title: '',
+          description: '',
+          order: 1,
+          lessons: [
+            {
+              id: 1,
+              title: '',
+              content: '',
+              type: 'text',
+              order: 1,
+              isCompleted: false,
+              resources: []
+            }
+          ]
+        }
+      ]
+    });
     setShowContentModal(true);
   };
 
@@ -365,18 +416,19 @@ const AdminFormationManagement = () => {
       description: '',
       price: '',
       durationWeeks: '',
-      type: 'online',
+      estimatedHours: '',
+      type: 'sociétés',
       category: '',
       categoryPrefix: '',
-      level: 'beginner',
+      level: 'intermediate',
       maxStudents: '',
       prerequisites: '',
       objectives: '',
       isActive: true,
       tags: [],
       thumbnail: '',
-      difficulty: 1,
-      estimatedHours: ''
+      difficulty: 3,
+      formationCode: ''
     });
     setSelectedFormation(null);
     setSelectedImage(null);
@@ -384,20 +436,17 @@ const AdminFormationManagement = () => {
   };
 
   // Enhanced content management functions
-  const addChapter = () => {
-    const newChapter = {
+  const addModule = () => {
+    const newModule = {
       id: Date.now(),
       title: '',
       description: '',
-      order: contentForm.chapters.length + 1,
-      isExpanded: true,
+      order: contentForm.content.length + 1,
       lessons: [{
         id: Date.now() + 1,
         title: '',
         content: '',
         type: 'text',
-        url: '',
-        duration: '',
         order: 1,
         isCompleted: false,
         resources: []
@@ -405,69 +454,68 @@ const AdminFormationManagement = () => {
     };
     setContentForm({
       ...contentForm,
-      chapters: [...contentForm.chapters, newChapter]
+      content: [...contentForm.content, newModule]
     });
   };
 
-  const addLesson = (chapterIndex) => {
-    const updatedChapters = [...contentForm.chapters];
+  const addLesson = (moduleIndex) => {
+    const updatedContent = [...contentForm.content];
     const newLesson = {
       id: Date.now(),
       title: '',
       content: '',
       type: 'text',
-      url: '',
-      duration: '',
-      order: updatedChapters[chapterIndex].lessons.length + 1,
+      order: updatedContent[moduleIndex].lessons.length + 1,
       isCompleted: false,
       resources: []
     };
-    updatedChapters[chapterIndex].lessons.push(newLesson);
-    setContentForm({ ...contentForm, chapters: updatedChapters });
+    updatedContent[moduleIndex].lessons.push(newLesson);
+    setContentForm({ ...contentForm, content: updatedContent });
   };
 
-  const updateChapter = (chapterIndex, field, value) => {
-    const updatedChapters = [...contentForm.chapters];
-    updatedChapters[chapterIndex][field] = value;
-    setContentForm({ ...contentForm, chapters: updatedChapters });
+  const updateModule = (moduleIndex, field, value) => {
+    const updatedContent = [...contentForm.content];
+    updatedContent[moduleIndex][field] = value;
+    setContentForm({ ...contentForm, content: updatedContent });
   };
 
-  const updateLesson = (chapterIndex, lessonIndex, field, value) => {
-    const updatedChapters = [...contentForm.chapters];
-    updatedChapters[chapterIndex].lessons[lessonIndex][field] = value;
-    setContentForm({ ...contentForm, chapters: updatedChapters });
+  const updateLesson = (moduleIndex, lessonIndex, field, value) => {
+    const updatedContent = [...contentForm.content];
+    updatedContent[moduleIndex].lessons[lessonIndex][field] = value;
+    setContentForm({ ...contentForm, content: updatedContent });
   };
 
-  const removeChapter = (chapterIndex) => {
-    const updatedChapters = contentForm.chapters.filter((_, index) => index !== chapterIndex);
-    setContentForm({ ...contentForm, chapters: updatedChapters });
+  const removeModule = (moduleIndex) => {
+    const updatedContent = contentForm.content.filter((_, index) => index !== moduleIndex);
+    setContentForm({ ...contentForm, content: updatedContent });
   };
 
-  const removeLesson = (chapterIndex, lessonIndex) => {
-    const updatedChapters = [...contentForm.chapters];
-    updatedChapters[chapterIndex].lessons = updatedChapters[chapterIndex].lessons.filter((_, index) => index !== lessonIndex);
-    setContentForm({ ...contentForm, chapters: updatedChapters });
+  const removeLesson = (moduleIndex, lessonIndex) => {
+    const updatedContent = [...contentForm.content];
+    updatedContent[moduleIndex].lessons = updatedContent[moduleIndex].lessons.filter((_, index) => index !== lessonIndex);
+    setContentForm({ ...contentForm, content: updatedContent });
   };
 
-  const toggleChapterExpansion = (chapterIndex) => {
-    const updatedChapters = [...contentForm.chapters];
-    updatedChapters[chapterIndex].isExpanded = !updatedChapters[chapterIndex].isExpanded;
-    setContentForm({ ...contentForm, chapters: updatedChapters });
+  const toggleModuleExpansion = (moduleIndex) => {
+    setExpandedModules(prev => ({
+      ...prev,
+      [moduleIndex]: !prev[moduleIndex]
+    }));
   };
 
-  const duplicateChapter = (chapterIndex) => {
-    const chapterToDuplicate = { ...contentForm.chapters[chapterIndex] };
-    chapterToDuplicate.id = Date.now();
-    chapterToDuplicate.title = `${chapterToDuplicate.title} (Copie)`;
-    chapterToDuplicate.order = contentForm.chapters.length + 1;
-    chapterToDuplicate.lessons = chapterToDuplicate.lessons.map(lesson => ({
+  const duplicateModule = (moduleIndex) => {
+    const moduleToDuplicate = { ...contentForm.content[moduleIndex] };
+    moduleToDuplicate.id = Date.now();
+    moduleToDuplicate.title = `${moduleToDuplicate.title} (Copie)`;
+    moduleToDuplicate.order = contentForm.content.length + 1;
+    moduleToDuplicate.lessons = moduleToDuplicate.lessons.map(lesson => ({
       ...lesson,
       id: Date.now() + Math.random()
     }));
     
     setContentForm({
       ...contentForm,
-      chapters: [...contentForm.chapters, chapterToDuplicate]
+      content: [...contentForm.content, moduleToDuplicate]
     });
   };
 
@@ -518,10 +566,17 @@ const AdminFormationManagement = () => {
 
   const getTypeColor = (type) => {
     switch (type) {
-      case 'online': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'presentielle': return 'bg-green-100 text-green-800 border-green-200';
-      case 'hybrid': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'sociétés': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'passagers': return 'bg-green-100 text-green-800 border-green-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getTypeIcon = (type) => {
+    switch (type) {
+      case 'sociétés': return <Building className="h-4 w-4 mr-1" />;
+      case 'passagers': return <User className="h-4 w-4 mr-1" />;
+      default: return null;
     }
   };
 
@@ -611,14 +666,14 @@ const AdminFormationManagement = () => {
           >
             <ImageIcon className="h-12 w-12 text-gray-400 mb-4" />
             <p className="text-sm text-gray-600 mb-2">Cliquez pour sélectionner une image</p>
-            <p className="text-xs text-gray-400">PNG, JPG, GIF jusqu\'à 10MB</p>
+            <p className="text-xs text-gray-400">PNG, JPG, GIF jusqu'à 10MB</p>
           </label>
         </div>
       )}
       
       {/* Manual URL Input */}
       <div>
-        <Label htmlFor="thumbnail-url" className="text-sm font-medium">Ou entrez une URL d\'image</Label>
+        <Label htmlFor="thumbnail-url" className="text-sm font-medium">Ou entrez une URL d'image</Label>
         <Input
           id="thumbnail-url"
           value={formationForm.thumbnail}
@@ -678,7 +733,7 @@ const AdminFormationManagement = () => {
                       value={formationForm.title}
                       onChange={(e) => setFormationForm({ ...formationForm, title: e.target.value })}
                       className="mt-1 h-12"
-                      placeholder="Ex: Développement Web Avancé"
+                      placeholder="Ex: Travail en Hauteur"
                       required
                     />
                   </div>
@@ -713,7 +768,7 @@ const AdminFormationManagement = () => {
                     onChange={(e) => setFormationForm({ ...formationForm, description: e.target.value })}
                     rows={4}
                     className="mt-1"
-                    placeholder="Décrivez votre formation en détail..."
+                    placeholder="Formation sur la prévention des risques liés aux travaux en hauteur..."
                     required
                   />
                 </div>
@@ -742,7 +797,7 @@ const AdminFormationManagement = () => {
                       value={formationForm.durationWeeks}
                       onChange={(e) => setFormationForm({ ...formationForm, durationWeeks: e.target.value })}
                       className="mt-1 h-12"
-                      placeholder="8"
+                      placeholder="1"
                       required
                     />
                   </div>
@@ -750,11 +805,10 @@ const AdminFormationManagement = () => {
                     <Label htmlFor="estimatedHours" className="text-sm font-medium">Heures estimées</Label>
                     <Input
                       id="estimatedHours"
-                      type="number"
                       value={formationForm.estimatedHours}
                       onChange={(e) => setFormationForm({ ...formationForm, estimatedHours: e.target.value })}
                       className="mt-1 h-12"
-                      placeholder="40"
+                      placeholder="12h"
                     />
                   </div>
                   <div>
@@ -765,12 +819,12 @@ const AdminFormationManagement = () => {
                       value={formationForm.maxStudents}
                       onChange={(e) => setFormationForm({ ...formationForm, maxStudents: e.target.value })}
                       className="mt-1 h-12"
-                      placeholder="50"
+                      placeholder="20"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-3 gap-6">
                   <div>
                     <Label htmlFor="type" className="text-sm font-medium">Type de formation</Label>
                     <Select value={formationForm.type} onValueChange={(value) => setFormationForm({ ...formationForm, type: value })}>
@@ -778,9 +832,18 @@ const AdminFormationManagement = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="online">En ligne</SelectItem>
-                        <SelectItem value="presentielle">Présentielle</SelectItem>
-                        <SelectItem value="hybrid">Hybride</SelectItem>
+                        <SelectItem value="sociétés">
+                          <div className="flex items-center">
+                            <Building className="h-4 w-4 mr-2" />
+                            Sociétés
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="passagers">
+                          <div className="flex items-center">
+                            <User className="h-4 w-4 mr-2" />
+                            Passagers
+                          </div>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -797,6 +860,21 @@ const AdminFormationManagement = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div>
+                    <Label htmlFor="difficulty" className="text-sm font-medium">Difficulté (1-5)</Label>
+                    <Select value={formationForm.difficulty.toString()} onValueChange={(value) => setFormationForm({ ...formationForm, difficulty: parseInt(value) })}>
+                      <SelectTrigger className="mt-1 h-12">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 - Très facile</SelectItem>
+                        <SelectItem value="2">2 - Facile</SelectItem>
+                        <SelectItem value="3">3 - Moyen</SelectItem>
+                        <SelectItem value="4">4 - Difficile</SelectItem>
+                        <SelectItem value="5">5 - Très difficile</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
@@ -808,7 +886,7 @@ const AdminFormationManagement = () => {
                       onChange={(e) => setFormationForm({ ...formationForm, prerequisites: e.target.value })}
                       rows={3}
                       className="mt-1"
-                      placeholder="Listez les prérequis nécessaires..."
+                      placeholder="Aucune ou listez les prérequis nécessaires..."
                     />
                   </div>
                   <div>
@@ -819,7 +897,7 @@ const AdminFormationManagement = () => {
                       onChange={(e) => setFormationForm({ ...formationForm, objectives: e.target.value })}
                       rows={3}
                       className="mt-1"
-                      placeholder="Décrivez les objectifs d\'apprentissage..."
+                      placeholder="Repérer les risques, appliquer les procédures..."
                     />
                   </div>
                 </div>
@@ -854,23 +932,23 @@ const AdminFormationManagement = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Formations Actives
+              Formations Sociétés
             </CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formations.filter(f => f.isActive).length}</div>
+            <div className="text-2xl font-bold">{formations.filter(f => f.type === 'sociétés').length}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Catégories
+              Formations Passagers
             </CardTitle>
-            <Tag className="h-4 w-4 text-muted-foreground" />
+            <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{categories.length}</div>
+            <div className="text-2xl font-bold">{formations.filter(f => f.type === 'passagers').length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -962,20 +1040,12 @@ const AdminFormationManagement = () => {
                     </Button>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleSort('durationWeeks')}
-                      className="font-semibold text-gray-700 hover:text-blue-600 p-0 h-auto"
-                    >
-                      Durée
-                      <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
+                    Difficulté
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Statut
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -994,58 +1064,87 @@ const AdminFormationManagement = () => {
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center space-x-3">
-                        
-                          <div className="text-sm font-medium text-gray-900">
-                            {formation.title}
-                            <div className="text-xs text-gray-500">
-                              {formation.description?.substring(0, 50)}...
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            {formation.thumbnail ? (
+                              <img 
+                                className="h-10 w-10 rounded-lg object-cover" 
+                                src={formation.thumbnail} 
+                                alt={formation.title} 
+                              />
+                            ) : (
+                              <div className="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center">
+                                <BookOpen className="h-5 w-5 text-gray-400" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {formation.title}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {formation.formationCode}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <Badge className={`${categoryInfo.color} text-white`}>
+                          <span className="mr-1">{categoryInfo.icon}</span>
                           {categoryInfo.name}
                         </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <Badge className={`${getTypeColor(formation.type)}`}>
-                          {formation.type === 'online' ? 'En ligne' :
-                           formation.type === 'presentielle' ? 'Présentielle' : 'Hybride'}
+                        <Badge className={getTypeColor(formation.type)}>
+                          {getTypeIcon(formation.type)}
+                          {formation.type === 'sociétés' ? 'Sociétés' : 
+                           formation.type === 'passagers' ? 'Passagers' : formation.type}
                         </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <Badge className={`${getLevelColor(formation.level)}`}>
+                        <Badge className={getLevelColor(formation.level)}>
                           {formation.level === 'beginner' ? 'Débutant' :
-                           formation.level === 'intermediate' ? 'Intermédiaire' : 'Avancé'}
+                           formation.level === 'intermediate' ? 'Intermédiaire' :
+                           formation.level === 'advanced' ? 'Avancé' : formation.level}
                         </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formation.price} DT
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formation.durationWeeks} sem.
-                        {formation.estimatedHours && (
-                          <div className="text-xs text-gray-500">({formation.estimatedHours}h)</div>
-                        )}
+                        {formation.price === 0 ? 'Gratuit' : `${formation.price} DT`}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {formation.isActive ? (
-                          <Badge variant="outline" className="bg-green-100 text-green-800">Actif</Badge>
-                        ) : (
-                          <Badge variant="outline" className="bg-red-100 text-red-800">Inactif</Badge>
-                        )}
+                        <div className="flex items-center">
+                          {getDifficultyStars(formation.difficulty || 3)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Badge className={formation.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                          {formation.isActive ? 'Actif' : 'Inactif'}
+                        </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex space-x-2 justify-center">
-                          <Button variant="ghost" size="sm" title="Voir le contenu" onClick={() => openContentModal(formation)}>
-                            <Eye className="h-4 w-4" />
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openContentModal(formation)}
+                            className="text-blue-600 hover:text-blue-900"
+                          >
+                            <BookOpen className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" title="Modifier" onClick={() => openEditModal(formation)}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openEditModal(formation)}
+                            className="text-green-600 hover:text-green-900"
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" title="Supprimer" onClick={() => handleDeleteFormation(formation._id)} className="text-red-600 hover:text-red-900">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteFormation(formation._id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -1056,74 +1155,6 @@ const AdminFormationManagement = () => {
               </tbody>
             </table>
           </div>
-          
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-3 border-t border-gray-200 bg-white">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <span>
-                  Affichage de {((currentPage - 1) * itemsPerPage) + 1} à {Math.min(currentPage * itemsPerPage, filteredAndSortedFormations.length)} sur {filteredAndSortedFormations.length} formations
-                </span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="h-8"
-                >
-                  Précédent
-                </Button>
-                
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => (
-                    <Button
-                      key={i + 1}
-                      variant={currentPage === i + 1 ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(i + 1)}
-                      className="h-8 w-8 p-0"
-                    >
-                      {i + 1}
-                    </Button>
-                  ))}
-                </div>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                  disabled={currentPage === totalPages}
-                  className="h-8"
-                >
-                  Suivant
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {paginatedFormations.length === 0 && (
-            <div className="text-center py-12">
-              <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">Aucune formation trouvée</h3>
-              <p className="text-gray-500 mb-6">
-                {searchTerm || selectedCategory !== 'all' 
-                  ? 'Essayez de modifier vos critères de recherche.' 
-                  : 'Commencez par créer votre première formation.'}
-              </p>
-              {(!searchTerm && selectedCategory === 'all') && (
-                <Button
-                  onClick={() => setShowCreateModal(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Créer une formation
-                </Button>
-              )}
-            </div>
-          )}
         </CardContent>
       </Card>
 
@@ -1142,7 +1173,6 @@ const AdminFormationManagement = () => {
                   value={formationForm.title}
                   onChange={(e) => setFormationForm({ ...formationForm, title: e.target.value })}
                   className="mt-1 h-12"
-                  placeholder="Ex: Développement Web Avancé"
                   required
                 />
               </div>
@@ -1177,12 +1207,11 @@ const AdminFormationManagement = () => {
                 onChange={(e) => setFormationForm({ ...formationForm, description: e.target.value })}
                 rows={4}
                 className="mt-1"
-                placeholder="Décrivez votre formation en détail..."
                 required
               />
             </div>
             
-            {/* Image Upload Component */}
+            {/* Image Upload Component for Edit */}
             <ImageUploadComponent isEdit={true} />
             
             <div className="grid grid-cols-4 gap-4">
@@ -1194,7 +1223,6 @@ const AdminFormationManagement = () => {
                   value={formationForm.price}
                   onChange={(e) => setFormationForm({ ...formationForm, price: e.target.value })}
                   className="mt-1 h-12"
-                  placeholder="0"
                   required
                 />
               </div>
@@ -1206,7 +1234,6 @@ const AdminFormationManagement = () => {
                   value={formationForm.durationWeeks}
                   onChange={(e) => setFormationForm({ ...formationForm, durationWeeks: e.target.value })}
                   className="mt-1 h-12"
-                  placeholder="8"
                   required
                 />
               </div>
@@ -1214,11 +1241,9 @@ const AdminFormationManagement = () => {
                 <Label htmlFor="edit-estimatedHours" className="text-sm font-medium">Heures estimées</Label>
                 <Input
                   id="edit-estimatedHours"
-                  type="number"
                   value={formationForm.estimatedHours}
                   onChange={(e) => setFormationForm({ ...formationForm, estimatedHours: e.target.value })}
                   className="mt-1 h-12"
-                  placeholder="40"
                 />
               </div>
               <div>
@@ -1229,12 +1254,11 @@ const AdminFormationManagement = () => {
                   value={formationForm.maxStudents}
                   onChange={(e) => setFormationForm({ ...formationForm, maxStudents: e.target.value })}
                   className="mt-1 h-12"
-                  placeholder="50"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-3 gap-6">
               <div>
                 <Label htmlFor="edit-type" className="text-sm font-medium">Type de formation</Label>
                 <Select value={formationForm.type} onValueChange={(value) => setFormationForm({ ...formationForm, type: value })}>
@@ -1242,9 +1266,18 @@ const AdminFormationManagement = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="online">En ligne</SelectItem>
-                    <SelectItem value="presentielle">Présentielle</SelectItem>
-                    <SelectItem value="hybrid">Hybride</SelectItem>
+                    <SelectItem value="sociétés">
+                      <div className="flex items-center">
+                        <Building className="h-4 w-4 mr-2" />
+                        Sociétés
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="passagers">
+                      <div className="flex items-center">
+                        <User className="h-4 w-4 mr-2" />
+                        Passagers
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1261,6 +1294,21 @@ const AdminFormationManagement = () => {
                   </SelectContent>
                 </Select>
               </div>
+              <div>
+                <Label htmlFor="edit-difficulty" className="text-sm font-medium">Difficulté (1-5)</Label>
+                <Select value={formationForm.difficulty.toString()} onValueChange={(value) => setFormationForm({ ...formationForm, difficulty: parseInt(value) })}>
+                  <SelectTrigger className="mt-1 h-12">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 - Très facile</SelectItem>
+                    <SelectItem value="2">2 - Facile</SelectItem>
+                    <SelectItem value="3">3 - Moyen</SelectItem>
+                    <SelectItem value="4">4 - Difficile</SelectItem>
+                    <SelectItem value="5">5 - Très difficile</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -1272,7 +1320,6 @@ const AdminFormationManagement = () => {
                   onChange={(e) => setFormationForm({ ...formationForm, prerequisites: e.target.value })}
                   rows={3}
                   className="mt-1"
-                  placeholder="Listez les prérequis nécessaires..."
                 />
               </div>
               <div>
@@ -1283,198 +1330,221 @@ const AdminFormationManagement = () => {
                   onChange={(e) => setFormationForm({ ...formationForm, objectives: e.target.value })}
                   rows={3}
                   className="mt-1"
-                  placeholder="Décrivez les objectifs d\'apprentissage..."
                 />
               </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="edit-isActive"
-                checked={formationForm.isActive}
-                onChange={(e) => setFormationForm({ ...formationForm, isActive: e.target.checked })}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <Label htmlFor="edit-isActive" className="text-sm font-medium">Formation active</Label>
             </div>
 
             <div className="flex justify-end gap-4">
               <Button type="button" variant="outline" onClick={() => setShowEditModal(false)}>
                 Annuler
               </Button>
-              <Button type="submit" disabled={uploading} className="bg-blue-600 hover:bg-blue-700 text-white">
-                {uploading ? 'Téléchargement...' : 'Sauvegarder les modifications'}
+              <Button type="submit" disabled={uploading} className="bg-gradient-to-r from-green-600 to-blue-600">
+                {uploading ? 'Téléchargement...' : 'Modifier la Formation'}
               </Button>
             </div>
           </form>
         </DialogContent>
       </Dialog>
 
-      {/* Content Modal */}
+      {/* Content Management Modal */}
       <Dialog open={showContentModal} onOpenChange={setShowContentModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">
-              Contenu de la formation: {selectedFormation?.title}
+              Gestion du contenu - {selectedFormation?.title}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleUpdateContent} className="space-y-6">
-            {contentForm.chapters.map((chapter, chapterIndex) => (
-              <Card key={chapter.id} className="shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between p-4 bg-gray-50">
-                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleChapterExpansion(chapterIndex)}
-                      className="p-0 h-auto"
-                    >
-                      {chapter.isExpanded ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
-                    </Button>
-                    Chapitre {chapterIndex + 1}: 
-                    <Input
-                      value={chapter.title}
-                      onChange={(e) => updateChapter(chapterIndex, 'title', e.target.value)}
-                      placeholder="Titre du chapitre"
-                      className="ml-2 text-lg font-semibold border-none focus-visible:ring-0"
-                    />
-                  </CardTitle>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => duplicateChapter(chapterIndex)}
-                      title="Dupliquer le chapitre"
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeChapter(chapterIndex)}
-                      title="Supprimer le chapitre"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardHeader>
-                {chapter.isExpanded && (
-                  <CardContent className="p-4 space-y-4">
-                    <div>
-                      <Label htmlFor={`chapter-description-${chapter.id}`}>Description du chapitre</Label>
-                      <Textarea
-                        id={`chapter-description-${chapter.id}`}
-                        value={chapter.description}
-                        onChange={(e) => updateChapter(chapterIndex, 'description', e.target.value)}
-                        placeholder="Description du chapitre"
-                        rows={2}
-                      />
-                    </div>
-                    <h4 className="text-md font-semibold mt-4">Leçons:</h4>
-                    {chapter.lessons.map((lesson, lessonIndex) => (
-                      <div key={lesson.id} className="border p-3 rounded-md bg-white shadow-sm space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium">Leçon {lessonIndex + 1}:</Label>
-                          <div className="flex gap-2">
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => removeLesson(chapterIndex, lessonIndex)}
-                              title="Supprimer la leçon"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                        <div>
-                          <Label htmlFor={`lesson-title-${lesson.id}`}>Titre de la leçon</Label>
+            <div className="space-y-4">
+              {contentForm.content.map((module, moduleIndex) => (
+                <Card key={module.id} className="border-2 border-gray-200">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleModuleExpansion(moduleIndex)}
+                        >
+                          {expandedModules[moduleIndex] ? 
+                            <ChevronDown className="h-4 w-4" /> : 
+                            <ChevronRight className="h-4 w-4" />
+                          }
+                        </Button>
+                        <div className="flex-1">
                           <Input
-                            id={`lesson-title-${lesson.id}`}
-                            value={lesson.title}
-                            onChange={(e) => updateLesson(chapterIndex, lessonIndex, 'title', e.target.value)}
-                            placeholder="Titre de la leçon"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor={`lesson-type-${lesson.id}`}>Type de contenu</Label>
-                          <Select
-                            value={lesson.type}
-                            onValueChange={(value) => updateLesson(chapterIndex, lessonIndex, 'type', value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Sélectionnez le type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="text">Texte</SelectItem>
-                              <SelectItem value="video">Vidéo</SelectItem>
-                              <SelectItem value="document">Document</SelectItem>
-                              <SelectItem value="link">Lien</SelectItem>
-                              <SelectItem value="image">Image</SelectItem>
-                              <SelectItem value="quiz">Quiz</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        {lesson.type === 'text' && (
-                          <div>
-                            <Label htmlFor={`lesson-content-${lesson.id}`}>Contenu</Label>
-                            <Textarea
-                              id={`lesson-content-${lesson.id}`}
-                              value={lesson.content}
-                              onChange={(e) => updateLesson(chapterIndex, lessonIndex, 'content', e.target.value)}
-                              placeholder="Contenu de la leçon"
-                              rows={4}
-                            />
-                          </div>
-                        )}
-                        {(lesson.type === 'video' || lesson.type === 'document' || lesson.type === 'link' || lesson.type === 'image') && (
-                          <div>
-                            <Label htmlFor={`lesson-url-${lesson.id}`}>URL du contenu</Label>
-                            <Input
-                              id={`lesson-url-${lesson.id}`}
-                              value={lesson.url}
-                              onChange={(e) => updateLesson(chapterIndex, lessonIndex, 'url', e.target.value)}
-                              placeholder="URL du contenu (ex: YouTube, Drive, image URL)"
-                            />
-                          </div>
-                        )}
-                        <div>
-                          <Label htmlFor={`lesson-duration-${lesson.id}`}>Durée (minutes)</Label>
-                          <Input
-                            id={`lesson-duration-${lesson.id}`}
-                            type="number"
-                            value={lesson.duration}
-                            onChange={(e) => updateLesson(chapterIndex, lessonIndex, 'duration', e.target.value)}
-                            placeholder="Durée estimée en minutes"
+                            value={module.title}
+                            onChange={(e) => updateModule(moduleIndex, 'title', e.target.value)}
+                            placeholder="Titre du module"
+                            className="font-semibold"
                           />
                         </div>
                       </div>
-                    ))}
-                    <Button type="button" variant="outline" onClick={() => addLesson(chapterIndex)} className="w-full">
-                      <Plus className="h-4 w-4 mr-2" /> Ajouter une leçon
-                    </Button>
-                  </CardContent>
-                )}
-              </Card>
-            ))}
-            <Button type="button" onClick={addChapter} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-              <Plus className="h-5 w-5 mr-2" /> Ajouter un chapitre
-            </Button>
-            <div className="flex justify-end gap-4 mt-6">
-              <Button type="button" variant="outline" onClick={() => setShowContentModal(false)}>
-                Annuler
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => duplicateModule(moduleIndex)}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => removeModule(moduleIndex)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <Textarea
+                      value={module.description}
+                      onChange={(e) => updateModule(moduleIndex, 'description', e.target.value)}
+                      placeholder="Description du module"
+                      rows={2}
+                    />
+                  </CardHeader>
+                  
+                  {expandedModules[moduleIndex] && (
+                    <CardContent className="pt-0">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-medium text-gray-700">Leçons</h4>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => addLesson(moduleIndex)}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Ajouter une leçon
+                          </Button>
+                        </div>
+                        
+                        {module.lessons.map((lesson, lessonIndex) => (
+                          <Card key={lesson.id} className="border border-gray-100">
+                            <CardContent className="p-4">
+                              <div className="grid grid-cols-12 gap-3 items-start">
+                                <div className="col-span-4">
+                                  <Input
+                                    value={lesson.title}
+                                    onChange={(e) => updateLesson(moduleIndex, lessonIndex, 'title', e.target.value)}
+                                    placeholder="Titre de la leçon"
+                                    className="text-sm"
+                                  />
+                                </div>
+                                <div className="col-span-2">
+                                  <Select 
+                                    value={lesson.type} 
+                                    onValueChange={(value) => updateLesson(moduleIndex, lessonIndex, 'type', value)}
+                                  >
+                                    <SelectTrigger className="text-sm">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="text">Texte</SelectItem>
+                                      <SelectItem value="video">Vidéo</SelectItem>
+                                      <SelectItem value="document">Document</SelectItem>
+                                      <SelectItem value="quiz">Quiz</SelectItem>
+                                      <SelectItem value="link">Lien</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="col-span-5">
+                                  <Textarea
+                                    value={lesson.content}
+                                    onChange={(e) => updateLesson(moduleIndex, lessonIndex, 'content', e.target.value)}
+                                    placeholder="Contenu de la leçon"
+                                    rows={2}
+                                    className="text-sm"
+                                  />
+                                </div>
+                                <div className="col-span-1 flex justify-end">
+                                  <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => removeLesson(moduleIndex, lessonIndex)}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </CardContent>
+                  )}
+                </Card>
+              ))}
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={addModule}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Ajouter un module
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
-                Sauvegarder le contenu
-              </Button>
+              
+              <div className="flex gap-4">
+                <Button type="button" variant="outline" onClick={() => setShowContentModal(false)}>
+                  Annuler
+                </Button>
+                <Button type="submit" className="bg-gradient-to-r from-blue-600 to-purple-600">
+                  <Save className="h-4 w-4 mr-2" />
+                  Sauvegarder le contenu
+                </Button>
+              </div>
             </div>
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-700">
+              Affichage de {(currentPage - 1) * itemsPerPage + 1} à {Math.min(currentPage * itemsPerPage, filteredAndSortedFormations.length)} sur {filteredAndSortedFormations.length} formations
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Précédent
+            </Button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </Button>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Suivant
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

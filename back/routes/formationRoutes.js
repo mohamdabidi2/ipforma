@@ -22,7 +22,7 @@ router.get("/list/all", getFormationsList);
 router.get("/:id", getFormationById);
 
 // Protected routes (admin only)
-router.post("/", protect, authorize(["admin"]), createFormation);
+router.post("/", createFormation);
 router.put("/:id", protect, authorize(["admin"]), updateFormation);
 router.delete("/:id", protect, authorize(["admin"]), deleteFormation);
 

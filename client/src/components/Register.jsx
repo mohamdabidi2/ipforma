@@ -15,7 +15,7 @@ const Register = () => {
     name: '',
     lastname: '',
     email: '',
-    phone: '',
+    phone: '+216',
     codeCin: '',
     password: '',
     confirmPassword: '',
@@ -35,6 +35,22 @@ const Register = () => {
     setError('');
   };
 
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    if (value.startsWith('+216') || value === '') {
+      setFormData(prev => ({
+        ...prev,
+        phone: value
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        phone: '+216' + value
+      }));
+    }
+    setError('');
+  };
+
   const handleRoleChange = (value) => {
     setFormData(prev => ({
       ...prev,
@@ -49,13 +65,13 @@ const Register = () => {
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError('كلمتا المرور غير متطابقتين');
       setLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
+      setError('يجب أن تتكون كلمة المرور من 6 أحرف على الأقل');
       setLoading(false);
       return;
     }
@@ -73,7 +89,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div style={{fontFamily:"Cairo, Noto Sans Arabic, sans-serif",direction: 'rtl'}} className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
@@ -81,12 +97,12 @@ const Register = () => {
            <img src="../logo.png" width={200} alt="" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900">
-            Créer votre compte
+            إنشاء حسابك
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Ou{' '}
+            أو{' '}
             <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-              connectez-vous à votre compte existant
+              سجل الدخول إلى حسابك الحالي
             </Link>
           </p>
         </div>
@@ -94,7 +110,7 @@ const Register = () => {
         {/* Registration Form */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-center">Inscription</CardTitle>
+            <CardTitle className="text-center">التسجيل</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -107,7 +123,7 @@ const Register = () => {
               {/* Name fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="name">Prénom *</Label>
+                  <Label htmlFor="name">الاسم الأول *</Label>
                   <Input
                     id="name"
                     name="name"
@@ -115,12 +131,12 @@ const Register = () => {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder="Votre prénom"
+                    placeholder="اسمك الأول"
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="lastname">Nom *</Label>
+                  <Label htmlFor="lastname">الاسم الأخير *</Label>
                   <Input
                     id="lastname"
                     name="lastname"
@@ -128,7 +144,7 @@ const Register = () => {
                     required
                     value={formData.lastname}
                     onChange={handleInputChange}
-                    placeholder="Votre nom"
+                    placeholder="اسمك الأخير"
                     className="mt-1"
                   />
                 </div>
@@ -136,37 +152,37 @@ const Register = () => {
 
               {/* Contact fields */}
               <div>
-                <Label htmlFor="phone">Numéro de téléphone *</Label>
+                <Label htmlFor="phone">رقم الهاتف *</Label>
                 <Input
                   id="phone"
                   name="phone"
                   type="tel"
                   required
                   value={formData.phone}
-                  onChange={handleInputChange}
+                  onChange={handlePhoneChange}
                   placeholder="+216 XX XXX XXX"
                   className="mt-1"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Ce numéro sera utilisé pour vous connecter
+                  سيتم استخدام هذا الرقم لتسجيل الدخول
                 </p>
               </div>
 
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">البريد الإلكتروني</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="votre@email.com"
+                  placeholder="بريدك الإلكتروني@example.com"
                   className="mt-1"
                 />
               </div>
 
               <div>
-                <Label htmlFor="codeCin">Code CIN *</Label>
+                <Label htmlFor="codeCin">رمز CIN *</Label>
                 <Input
                   id="codeCin"
                   name="codeCin"
@@ -179,12 +195,9 @@ const Register = () => {
                 />
               </div>
 
-              
-            
-
               {/* Password fields */}
               <div>
-                <Label htmlFor="password">Mot de passe *</Label>
+                <Label htmlFor="password">كلمة المرور *</Label>
                 <div className="relative mt-1">
                   <Input
                     id="password"
@@ -193,7 +206,7 @@ const Register = () => {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Minimum 6 caractères"
+                    placeholder="6 أحرف على الأقل"
                     className="pr-10"
                   />
                   <button
@@ -211,7 +224,7 @@ const Register = () => {
               </div>
 
               <div>
-                <Label htmlFor="confirmPassword">Confirmer le mot de passe *</Label>
+                <Label htmlFor="confirmPassword">تأكيد كلمة المرور *</Label>
                 <div className="relative mt-1">
                   <Input
                     id="confirmPassword"
@@ -220,7 +233,7 @@ const Register = () => {
                     required
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    placeholder="Confirmez votre mot de passe"
+                    placeholder="أكد كلمة المرور الخاصة بك"
                     className="pr-10"
                   />
                   <button
@@ -247,13 +260,13 @@ const Register = () => {
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
-                  J'accepte les{' '}
-              
-                    conditions d'utilisation
-                  {' '}
-                  et la{' '}
-                 
-                    politique de confidentialité
+                  أوافق على{' '}
+                
+                    شروط الاستخدام
+                 {' '}
+                  و{' '}
+                  
+                    سياسة الخصوصية
                 
                 </label>
               </div>
@@ -264,15 +277,15 @@ const Register = () => {
                 size="lg"
                 disabled={loading}
               >
-                {loading ? 'Création du compte...' : 'Créer mon compte'}
+                {loading ? 'جاري إنشاء الحساب...' : 'إنشاء حسابي'}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Déjà un compte ?{' '}
+                هل لديك حساب بالفعل؟{' '}
                 <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                  Connectez-vous
+                  سجل الدخول
                 </Link>
               </p>
             </div>
@@ -284,4 +297,5 @@ const Register = () => {
 };
 
 export default Register;
+
 

@@ -8,73 +8,77 @@ import {
   Award, 
   BookOpen,
   CheckCircle,
-  Star
+  Star,
+  FileText,
+  Building
 } from 'lucide-react';
 
 const About = () => {
   const values = [
     {
       icon: Target,
-      title: "Excellence",
-      description: "Nous nous engageons à fournir une formation de la plus haute qualité avec des standards d'excellence."
+      title: "التميز",
+      description: "نلتزم بتقديم تدريب بأعلى جودة وفقًا لمعايير التميز العالمية."
     },
     {
       icon: Heart,
-      title: "Passion",
-      description: "Notre passion pour l'éducation et le développement professionnel guide tout ce que nous faisons."
+      title: "الشغف",
+      description: "شغفنا بالتعليم والتطوير المهني يوجه كل ما نقوم به من أجل نجاحكم."
     },
     {
       icon: Users,
-      title: "Collaboration",
-      description: "Nous croyons en l'apprentissage collaboratif et en la création d'une communauté d'apprenants."
+      title: "التعاون",
+      description: "نؤمن بالتعلم التعاوني وإنشاء مجتمع متفاعل من المتعلمين والخبراء."
     },
     {
       icon: Award,
-      title: "Innovation",
-      description: "Nous adoptons les dernières technologies et méthodes pédagogiques pour un apprentissage optimal."
+      title: "الابتكار",
+      description: "نعتمد أحدث التقنيات والأساليب التعليمية المبتكرة لتحقيق أفضل تعلم."
     }
   ];
 
   const team = [
     {
-      name: "Dr. Ahmed Mansouri",
-      role: "Directeur Général",
-      description: "Expert en formation professionnelle avec plus de 15 ans d'expérience dans le domaine éducatif.",
-      image: "/api/placeholder/300/300"
+      name: "د. أحمد منصوري",
+      role: "المدير العام",
+      description: "خبير في التدريب المهني مع أكثر من 15 عامًا من الخبرة في المجال التعليمي والتطوير المؤسسي.",
+      image: "/api/placeholder/300/300",
+      letter: "A"
     },
     {
-      name: "Fatma Ben Salem",
-      role: "Directrice Pédagogique",
-      description: "Spécialiste en ingénierie pédagogique et développement de programmes de formation innovants.",
-      image: "/api/placeholder/300/300"
+      name: "فاطمة بن سالم",
+      role: "المديرة التعليمية",
+      description: "متخصصة في الهندسة التعليمية وتطوير برامج التدريب المبتكرة والمناهج الحديثة.",
+      image: "/api/placeholder/300/300",
+      letter: "F"
     },
     {
-      name: "Mohamed Trabelsi",
-      role: "Responsable Technique",
-      description: "Expert en technologies éducatives et plateformes d'apprentissage en ligne.",
-      image: "/api/placeholder/300/300"
+      name: "محمد طرابلسي",
+      role: "المسؤول التقني",
+      description: "خبير في التقنيات التعليمية ومنصات التعلم الإلكتروني والحلول الرقمية المتطورة.",
+      image: "/api/placeholder/300/300",
+      letter: "M"
     }
   ];
 
   const achievements = [
-    { number: "500+", label: "Étudiants diplômés" },
-    { number: "95%", label: "Taux de satisfaction" },
-    { number: "20+", label: "Formateurs experts" },
-    { number: "10", label: "Années d'expérience" }
+    { number: "2000+", label: "طلاب متخرجون" },
+    { number: "95%", label: "نسبة الرضا" },
+    { number: "20+", label: "مدربون خبراء" },
+    { number: "10", label: "سنوات الخبرة" }
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" dir="rtl" style={{ fontFamily: 'Cairo, Noto Sans Arabic, sans-serif' }}>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20">
+      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20 animate-fade-in">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-              À propos d'<span className="text-yellow-400">IPforma</span>
+            <h1 className="text-4xl lg:text-6xl font-bold mb-6 animate-slide-up">
+              حول <span className="text-yellow-400">IPforma</span>
             </h1>
-            <p className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto">
-              Centre de formation professionnel dédié à l'excellence éducative et au développement 
-              des compétences pour un avenir professionnel réussi.
+            <p className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto animate-slide-up animation-delay-200">
+              مركز تدريب مهني مخصص للتميز التعليمي وتطوير المهارات لبناء مستقبل مهني ناجح ومشرق.
             </p>
           </div>
         </div>
@@ -84,30 +88,26 @@ const About = () => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <Card className="p-8 border-l-4 border-l-blue-600">
+            <Card className="p-8 border-r-4 border-r-blue-600 hover-lift animate-slide-up">
               <CardContent className="p-0">
                 <div className="flex items-center mb-6">
-                  <Target className="h-12 w-12 text-blue-600 mr-4" />
-                  <h2 className="text-3xl font-bold text-gray-900">Notre Mission</h2>
+                  <Target className="h-12 w-12 text-blue-600 ml-4" />
+                  <h2 className="text-3xl font-bold text-gray-900">مهمتنا</h2>
                 </div>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  Fournir une formation professionnelle de haute qualité qui permet à nos étudiants 
-                  d'acquérir les compétences nécessaires pour exceller dans leur domaine et contribuer 
-                  au développement économique et social de la Tunisie.
+                  توفير تدريب مهني عالي الجودة يمكّن طلابنا من اكتساب المهارات اللازمة للتميز في مجالهم والمساهمة في التنمية الاقتصادية والاجتماعية لتونس. مهمتنا العامة هي توجيه المرشحين نحو التدريب المناسب الذي يتماشى مع مستواهم الأكاديمي وعمرهم واحتياجاتهم وحتى مستقبلهم المهني.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="p-8 border-l-4 border-l-green-600">
+            <Card className="p-8 border-r-4 border-r-green-600 hover-lift animate-slide-up animation-delay-200">
               <CardContent className="p-0">
                 <div className="flex items-center mb-6">
-                  <Eye className="h-12 w-12 text-green-600 mr-4" />
-                  <h2 className="text-3xl font-bold text-gray-900">Notre Vision</h2>
+                  <Eye className="h-12 w-12 text-green-600 ml-4" />
+                  <h2 className="text-3xl font-bold text-gray-900">رؤيتنا</h2>
                 </div>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  Devenir le centre de formation de référence en Tunisie, reconnu pour l'excellence 
-                  de ses programmes, l'innovation pédagogique et l'impact positif sur la carrière 
-                  de nos diplômés.
+                  أن نصبح مركز التدريب المرجعي في تونس، المعترف به لتميز برامجه، والابتكار التربوي، والتأثير الإيجابي على المسار المهني لخريجينا. نحن معهد تكوين خاص مستمر وأساسي نقبل جميع المستويات الدراسية ونسعى لتحقيق التميز في كل ما نقدمه.
                 </p>
               </CardContent>
             </Card>
@@ -119,42 +119,40 @@ const About = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <div className="animate-slide-up">
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                Notre Histoire
+                قصتنا
               </h2>
               <div className="space-y-6">
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  Fondé en 2015, IPforma est né de la vision de créer un centre de formation 
-                  qui répond aux besoins réels du marché du travail tunisien. Nos fondateurs, 
-                  experts dans leurs domaines respectifs, ont identifié un gap entre les 
-                  compétences enseignées et celles demandées par les entreprises.
+                  تأسست IPforma في عام 2015، وُلدت من رؤية إنشاء مركز تدريب يلبي الاحتياجات الحقيقية لسوق العمل التونسي. حدد مؤسسونا، الخبراء في مجالاتهم، فجوة بين المهارات التي يتم تدريسها وتلك التي تطلبها الشركات.
                 </p>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  Depuis notre création, nous avons formé plus de 500 professionnels dans 
-                  divers domaines, avec un taux de placement de 85% dans les 6 mois suivant 
-                  la formation. Notre approche pratique et notre réseau de partenaires 
-                  entreprises nous permettent d'offrir une formation alignée sur les réalités 
-                  du marché.
+                  منذ تأسيسنا، قمنا بتدريب أكثر من 2000 محترف في مجالات مختلفة، بمعدل توظيف 85% في غضون 6 أشهر بعد التدريب. يتيح لنا نهجنا العملي وشبكة شركائنا من الشركات تقديم تدريب يتماشى مع واقع السوق.
                 </p>
-                <div className="flex items-center space-x-4">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                  <span className="text-gray-700">Formations certifiantes reconnues</span>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                  <span className="text-gray-700">Formateurs experts du secteur</span>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                  <span className="text-gray-700">Suivi personnalisé des étudiants</span>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  تدريباتنا تتكون من فئتين رئيسيتين: برامج مخصصة للشركات وبرامج فردية للأشخاص الراغبين في تطوير مهاراتهم الشخصية والمهنية.
+                </p>
+                <div className="space-y-4">
+                  <div className="flex items-center animate-slide-up animation-delay-300">
+                    <CheckCircle className="h-6 w-6 text-green-600 ml-3" />
+                    <span className="text-gray-700">تدريبات معتمدة ومعترف بها دوليًا</span>
+                  </div>
+                  <div className="flex items-center animate-slide-up animation-delay-400">
+                    <CheckCircle className="h-6 w-6 text-green-600 ml-3" />
+                    <span className="text-gray-700">مدربون خبراء ومتخصصون في القطاع</span>
+                  </div>
+                  <div className="flex items-center animate-slide-up animation-delay-2000">
+                    <CheckCircle className="h-6 w-6 text-green-600 ml-3" />
+                    <span className="text-gray-700">متابعة شخصية ودعم مستمر للطلاب</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="relative">
-              <div className="aspect-square bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+            <div className="relative animate-scale-in animation-delay-600">
+              <div className="aspect-square bg-gradient-to-br from-blue-2000 to-purple-600 rounded-lg hover-scale">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <img src="../lbg.png" alt="" />
+                  <img src="../lbg.png" alt="IPforma" className="w-full h-full object-cover rounded-lg" />
                 </div>
               </div>
             </div>
@@ -165,13 +163,12 @@ const About = () => {
       {/* Values */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-slide-up">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Nos Valeurs
+              قيمنا الأساسية
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Les principes qui guident notre approche pédagogique et notre engagement 
-              envers l'excellence éducative.
+              المبادئ التي توجه نهجنا التعليمي والتزامنا بالتميز والجودة في كل ما نقدمه
             </p>
           </div>
 
@@ -179,9 +176,9 @@ const About = () => {
             {values.map((value, index) => {
               const Icon = value.icon;
               return (
-                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
+                <Card key={index} className="text-center p-6 hover-lift transition-all duration-300 animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
                   <CardContent className="p-0">
-                    <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4">
+                    <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 hover-scale">
                       <Icon className="h-8 w-8 text-blue-600" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">{value.title}</h3>
@@ -194,23 +191,24 @@ const About = () => {
         </div>
       </section>
 
+     
+
       {/* Achievements */}
       <section className="py-16 bg-blue-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-slide-up">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-              Nos Réalisations
+              إنجازاتنا المتميزة
             </h2>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Des chiffres qui témoignent de notre engagement et de notre impact 
-              dans le domaine de la formation professionnelle.
+              أرقام تشهد على التزامنا وتأثيرنا الإيجابي في مجال التدريب المهني والتطوير
             </p>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {achievements.map((achievement, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-yellow-400 mb-2">
+              <div key={index} className="text-center animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
+                <div className="text-4xl lg:text-5xl font-bold text-yellow-400 mb-2 animate-pulse-custom">
                   {achievement.number}
                 </div>
                 <div className="text-blue-100">{achievement.label}</div>
@@ -220,28 +218,55 @@ const About = () => {
         </div>
       </section>
 
-    
+      {/* Company Registration Info */}
+      <section className="py-12 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="p-6 hover-lift animate-slide-up">
+              <CardContent className="p-0">
+                <div className="flex items-center mb-4">
+                  <FileText className="h-8 w-8 text-blue-600 ml-3" />
+                  <h3 className="text-xl font-bold text-gray-900">المعرف الضريبي</h3>
+                </div>
+                <p className="text-lg text-gray-700 font-mono">1516179/A/A/P/000</p>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6 hover-lift animate-slide-up animation-delay-200">
+              <CardContent className="p-0">
+                <div className="flex items-center mb-4">
+                  <Building className="h-8 w-8 text-green-600 ml-3" />
+                  <h3 className="text-xl font-bold text-gray-900">رقم التسجيل</h3>
+                </div>
+                <p className="text-lg text-gray-700 font-mono">61-382-20</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
 
       {/* Contact CTA */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Prêt à commencer votre parcours ?
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Contactez-nous pour découvrir comment nos formations peuvent transformer votre carrière.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/contact" className="inline-block">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Nous contacter
-              </button>
-            </a>
-            <a href="/formations" className="inline-block">
-              <button className="border border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-semibold transition-colors">
-                Voir nos formations
-              </button>
-            </a>
+          <div className="animate-slide-up">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              هل أنت مستعد لبدء رحلتك؟
+            </h2>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              اتصل بنا لمعرفة كيف يمكن لتدريباتنا المتميزة أن تحول مسيرتك المهنية وتفتح لك آفاقًا جديدة من النجاح والتميز.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up animation-delay-200">
+              <a href="/contact" className="inline-block">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover-lift">
+                  اتصل بنا
+                </button>
+              </a>
+              <a href="/formations" className="inline-block">
+                <button className="border border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover-lift">
+                  شاهد تدريباتنا
+                </button>
+              </a>
+            </div>
           </div>
         </div>
       </section>
