@@ -634,7 +634,7 @@ const AdminFormationManagement = () => {
       {imagePreview && (
         <div className="relative w-full h-48 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
           <img 
-            src={imagePreview} 
+            src={'https://api.formation-ipforma.com/'+imagePreview} 
             alt="Preview" 
             className="w-full h-full object-cover"
           />
@@ -1069,7 +1069,7 @@ const AdminFormationManagement = () => {
                             {formation.thumbnail ? (
                               <img 
                                 className="h-10 w-10 rounded-lg object-cover" 
-                                src={formation.thumbnail} 
+                                src={"https://api.formation-ipforma.com/"+formation.thumbnail} 
                                 alt={formation.title} 
                               />
                             ) : (
