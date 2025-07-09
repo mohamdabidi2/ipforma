@@ -65,7 +65,7 @@ const About = () => {
     { number: "2000+", label: "طلاب متخرجون" },
     { number: "95%", label: "نسبة الرضا" },
     { number: "20+", label: "مدربون خبراء" },
-    { number: "10", label: "سنوات الخبرة" }
+    { number: "8+", label: "سنوات الخبرة" }
   ];
 
   return (
