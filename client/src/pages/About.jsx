@@ -77,9 +77,10 @@ const About = () => {
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 animate-slide-up">
                <span className="text-yellow-400">IPforma</span>
             </h1>
-            <p style={{fontSize:"15px"}} className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto animate-slide-up animation-delay-200">
+            <p style={{fontSize:"30px", background:"red",color:"white"}} className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto animate-slide-up animation-delay-200">
              مسجل بوزارة التكوين المهني و التشغيل تحت عدد 61/382/20 
             </p>
+            <br />
             <p className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto animate-slide-up animation-delay-200">
               معهد تكوين و تدريب مهني مخصص للتميز التعليمي وتطوير المهارات لبناء مستقبل مهني ناجح ومشرق.
             </p>
