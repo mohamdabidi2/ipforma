@@ -23,7 +23,7 @@ const Home = () => {
   const [stats, setStats] = useState({
     teachers: 20,
     courses: 75,
-    experience: 10
+    experience: 8
   });
   const [latestFormations, setLatestFormations] = useState([]);
   const [testimonials] = useState([
