@@ -289,7 +289,7 @@ const Contact = () => {
                         <h3 className="font-semibold text-gray-900 mb-3 text-lg">
                           المعرف الجبائي
                         </h3>
-                        <p className="text-gray-600 font-mono text-lg" style={{dir:"ltr",textAlign:"right"}}>1516179/A/A/P/000</p>
+                        <p className="text-gray-600 font-mono text-lg" style={{direction:"ltr",textAlign:"right"}}>1516179/A/A/P/000</p>
                       </div>
                     </div>
                   </CardContent>
