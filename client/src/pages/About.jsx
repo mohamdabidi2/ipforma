@@ -78,7 +78,7 @@ const About = () => {
                <span className="text-yellow-400">IPforma</span>
             </h1>
             <p style={{fontSize:"30px",color:"white"}} className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto animate-slide-up animation-delay-200">
-             مسجل بوزارة التكوين المهني و التشغيل تحت عدد 61/382/20 
+             مسجل بوزارة التكوين المهني و التشغيل تحت عدد <span ><p style={{display:"inline"}} className="">61-382-20</p></span> 
             </p>
             <br />
             <p className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto animate-slide-up animation-delay-200">
