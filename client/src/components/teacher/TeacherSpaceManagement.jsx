@@ -112,7 +112,7 @@ const TeacherSpaceManagement = () => {
       setSpaces(Array.isArray(spacesResponse.data) ? spacesResponse.data : []);
 
       // Fetch formations
-      const formationsResponse = await api.get('/formations/my/list');
+      const formationsResponse = await api.get('/formations');
       setFormations(Array.isArray(formationsResponse.data) ? formationsResponse.data : []);
 
       // Fetch students
@@ -206,7 +206,6 @@ const TeacherSpaceManagement = () => {
         }
       });
 
-      // Fetch updated data
       const spacesResponse = await api.get('/teacher-spaces/my-spaces');
       setSpaces(Array.isArray(spacesResponse.data) ? spacesResponse.data : []);
 
@@ -230,9 +229,8 @@ const TeacherSpaceManagement = () => {
     try {
       const response = await api.post(`/teacher-spaces/${selectedSpace._id}/add-link`, linkForm);
       
-      // Fetch updated data
-      const spacesResponse = await api.get('/teacher-spaces/my-spaces');
-      setSpaces(Array.isArray(spacesResponse.data) ? spacesResponse.data : []);
+          const spacesResponse = await api.get('/teacher-spaces/my-spaces');
+        setSpaces(Array.isArray(spacesResponse.data) ? spacesResponse.data : []);
 
       setShowLinkModal(false);
       setLinkForm({ title: '', url: '', description: '', category: 'general' });
@@ -247,10 +245,8 @@ const TeacherSpaceManagement = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?')) {
       try {
         const response = await api.delete(`/teacher-spaces/${spaceId}/files/${fileId}`);
-        
-        // Fetch updated data
-        const spacesResponse = await api.get('/teacher-spaces/my-spaces');
-        setSpaces(Array.isArray(spacesResponse.data) ? spacesResponse.data : []);
+         const spacesResponse = await api.get('/teacher-spaces/my-spaces');
+      setSpaces(Array.isArray(spacesResponse.data) ? spacesResponse.data : []);
         
         // Close the content modal after deletion
         setShowContentModal(false);
@@ -267,10 +263,8 @@ const TeacherSpaceManagement = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce lien ?')) {
       try {
         const response = await api.delete(`/teacher-spaces/${spaceId}/links/${linkId}`);
-        
-        // Fetch updated data
-        const spacesResponse = await api.get('/teacher-spaces/my-spaces');
-        setSpaces(Array.isArray(spacesResponse.data) ? spacesResponse.data : []);
+         const spacesResponse = await api.get('/teacher-spaces/my-spaces');
+      setSpaces(Array.isArray(spacesResponse.data) ? spacesResponse.data : []);
         
         // Close the content modal after deletion
         setShowContentModal(false);
@@ -415,7 +409,8 @@ const TeacherSpaceManagement = () => {
     setSelectedSpace(space);
     try {
       const response = await api.get(`/teacher-spaces/${space._id}/content`);
-      setContentForm(response.data || { files: [], links: [], documents: [] });
+      console.log(response.data.data)
+      setContentForm({ files: response.data.data.files || [], links: response.data.data.links || [] });
     } catch (error) {
       console.error('Error fetching content:', error);
       setContentForm({ files: [], links: [], documents: [] });
@@ -690,9 +685,7 @@ const TeacherSpaceManagement = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Espace
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Formation
-                </th>
+           
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Statut
                 </th>
@@ -723,15 +716,7 @@ const TeacherSpaceManagement = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {space.formation ? (
-                      <Badge variant="outline" className="text-xs">
-                        {space.formation.name}
-                      </Badge>
-                    ) : (
-                      <span className="text-sm text-gray-400">Non assignée</span>
-                    )}
-                  </td>
+               
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge className={getSpaceStatusColor(space)}>
                       <div className="flex items-center space-x-1">
@@ -816,15 +801,7 @@ const TeacherSpaceManagement = () => {
                       >
                         <LinkIcon className="h-4 w-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => copySpaceLink(space._id)}
-                        title="Copier le lien"
-                        className="h-8 w-8 p-0"
-                      >
-                        <Share2 className="h-4 w-4" />
-                      </Button>
+                    
                       <Button
                         size="sm"
                         variant="ghost"
@@ -1026,16 +1003,7 @@ const TeacherSpaceManagement = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        {isDocumentViewable(file.name) && (
-                          <Button 
-                            size="sm" 
-                            variant="ghost"
-                            onClick={() => handleViewDocument(file)}
-                            title="Voir le document"
-                          >
-                            <ZoomIn className="h-4 w-4" />
-                          </Button>
-                        )}
+                    
                         <Button 
                           size="sm" 
                           variant="ghost"

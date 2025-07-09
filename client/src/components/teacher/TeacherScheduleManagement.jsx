@@ -86,8 +86,8 @@ const TeacherScheduleManagement = () => {
       const year = new Date().getFullYear();
       
       const [studentsResponse, formationsResponse, schedulesResponse] = await Promise.all([
-        api.get('/users/students/my'),
-        api.get('/formations/my/list'),
+        api.get('/users/students'),
+        api.get('/formations'),
         api.get(`/schedules/week/${weekNumber}/${year}`)
       ]);
 

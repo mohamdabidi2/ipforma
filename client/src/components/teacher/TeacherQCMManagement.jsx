@@ -75,7 +75,7 @@ const TeacherQCMManagement = () => {
       setQcms(Array.isArray(qcmsResponse.data) ? qcmsResponse.data : []);
 
       // Fetch students
-      const studentsResponse = await api.get('/users/students/my');
+      const studentsResponse = await api.get('/users');
       setStudents(Array.isArray(studentsResponse.data) ? studentsResponse.data : []);
 
       setLoading(false);

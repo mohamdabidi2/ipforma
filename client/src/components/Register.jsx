@@ -182,12 +182,12 @@ const Register = () => {
               </div>
 
               <div>
-                <Label htmlFor="codeCin">رمز CIN *</Label>
+                <Label htmlFor="codeCin">رمز CIN </Label>
                 <Input
                   id="codeCin"
                   name="codeCin"
                   type="text"
-                  required
+                  
                   value={formData.codeCin}
                   onChange={handleInputChange}
                   placeholder="12345678"
