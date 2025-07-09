@@ -39,7 +39,7 @@ exports.registerUser = async (req, res) => {
       email, 
       password, 
       phone, 
-      codeCin, 
+      codeCin:codeCin||'', 
       formations: formationData ? [formationData] : [], 
       role: role || 'student' 
     });
