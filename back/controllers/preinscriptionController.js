@@ -1,6 +1,6 @@
 // Updated preinscriptionController.js with duplicate prevention logic
 
-const Preinscription = require("../models/Preinscription"); // Adjust path as needed
+const Preinscription = require("../models/preinscription"); // Adjust path as needed
 const User = require("../models/User");
 
 // Check if user already has a pre-inscription for a specific formation
