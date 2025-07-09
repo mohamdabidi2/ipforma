@@ -339,7 +339,7 @@ const Formations = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredFormations.map((formation, index) => {
+              {filteredFormations.reverse.map((formation, index) => {
                 const typeInfo = getTypeInfo(formation.type);
                 return (
                   <Card key={formation._id} className="overflow-hidden hover-lift transition-all duration-300 animate-slide-up border-2 hover:border-blue-300" style={{ animationDelay: `${index * 100}ms` }}>

@@ -75,10 +75,13 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 animate-slide-up">
-              حول <span className="text-yellow-400">IPforma</span>
+               <span className="text-yellow-400">IPforma</span>
             </h1>
+            <p style={{fontSize:"15px"}} className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto animate-slide-up animation-delay-200">
+             مسجل بوزارة التكوين المهني و التشغيل تحت عدد 61/382/20 
+            </p>
             <p className="text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto animate-slide-up animation-delay-200">
-              مركز تدريب مهني مخصص للتميز التعليمي وتطوير المهارات لبناء مستقبل مهني ناجح ومشرق.
+              معهد تكوين و تدريب مهني مخصص للتميز التعليمي وتطوير المهارات لبناء مستقبل مهني ناجح ومشرق.
             </p>
           </div>
         </div>
@@ -125,7 +128,7 @@ const About = () => {
               </h2>
               <div className="space-y-6">
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  تأسست IPforma في عام 2015، وُلدت من رؤية إنشاء مركز تدريب يلبي الاحتياجات الحقيقية لسوق العمل التونسي. حدد مؤسسونا، الخبراء في مجالاتهم، فجوة بين المهارات التي يتم تدريسها وتلك التي تطلبها الشركات.
+                  تأسست IPforma في عام 2017، وُلدت من رؤية إنشاء مركز تدريب يلبي الاحتياجات الحقيقية لسوق العمل التونسي. حدد مؤسسونا، الخبراء في مجالاتهم، فجوة بين المهارات التي يتم تدريسها وتلك التي تطلبها الشركات.
                 </p>
                 <p className="text-lg text-gray-600 leading-relaxed">
                   منذ تأسيسنا، قمنا بتدريب أكثر من 2000 محترف في مجالات مختلفة، بمعدل توظيف 85% في غضون 6 أشهر بعد التدريب. يتيح لنا نهجنا العملي وشبكة شركائنا من الشركات تقديم تدريب يتماشى مع واقع السوق.
@@ -226,9 +229,9 @@ const About = () => {
               <CardContent className="p-0">
                 <div className="flex items-center mb-4">
                   <FileText className="h-8 w-8 text-blue-600 ml-3" />
-                  <h3 className="text-xl font-bold text-gray-900">المعرف الضريبي</h3>
+                  <h3 className="text-xl font-bold text-gray-900">المعرف الجبائي</h3>
                 </div>
-                <p className="text-lg text-gray-700 font-mono">1516179/A/A/P/000</p>
+                <p className="text-lg text-gray-700 font-mono" style={{direction:"ltr"}}>1516179/A/A/P/000</p>
               </CardContent>
             </Card>
 
