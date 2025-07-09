@@ -232,7 +232,7 @@ const About = () => {
                   <FileText className="h-8 w-8 text-blue-600 ml-3" />
                   <h3 className="text-xl font-bold text-gray-900">المعرف الجبائي</h3>
                 </div>
-                <p className="text-lg text-gray-700 font-mono" style={{direction:"ltr"}}>1516179/A/A/P/000</p>
+                <p className="text-lg text-gray-700 font-mono" style={{direction:"ltr" ,textAlign:"right"}}>1516179/A/A/P/000</p>
               </CardContent>
             </Card>
 
