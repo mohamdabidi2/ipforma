@@ -56,16 +56,16 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: MapPin,
-      title: "العنوان الأول",
+      title: "العنوان الرئيسي",
       details: [
         "صفاقس باب الجبلي عمارة رباط المدينة بجانب صفاقس 2000 قبالة الكاس المدرج",
-        "بلوك 'أ' أو 'د'، الطابق الخامس، مكتب رقم 509"
+        " 'أ' أو 'د'، الطابق الخامس، مكتب رقم 509"
       ],
       color: "text-blue-600"
     },
     {
       icon: MapPin,
-      title: "العنوان الثاني",
+      title: "العنوان الفرعي",
       details: [
         "شارع 5 أوت صفاقس نهج 19 جويلية جانب نزل بيزنس",
         "في عمارة العفاس الطابق الثاني فوق مركز الأعمال"
@@ -80,14 +80,16 @@ const Contact = () => {
         "95.606.361", 
         "55.547.993",
         "29.938.313",
-        "74.206.216"
+        "74.206.216",
+        "94.740.222",
+        "94.558.222"
       ],
       color: "text-purple-600"
     },
     {
       icon: Mail,
       title: "البريد الإلكتروني",
-      details: ["ipforma.sfax1@gmail.com"],
+      details: ["ipforma.sfax1@gmail.com","ipforma.sfax@gmail.com"],
       color: "text-red-600"
     },
     {
@@ -154,13 +156,13 @@ const Contact = () => {
                       </div>
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                          البريد الإلكتروني *
+                          البريد الإلكتروني 
                         </label>
                         <Input
                           id="email"
                           name="email"
                           type="email"
-                          required
+                          
                           value={formData.email}
                           onChange={handleInputChange}
                           placeholder="your@email.com"
@@ -172,11 +174,12 @@ const Contact = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                          الهاتف
+                          الهاتف*
                         </label>
                         <Input
                           id="phone"
                           name="phone"
+                          required
                           type="tel"
                           value={formData.phone}
                           onChange={handleInputChange}
@@ -284,9 +287,9 @@ const Contact = () => {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-gray-900 mb-3 text-lg">
-                          المعرف الضريبي
+                          المعرف الجبائي
                         </h3>
-                        <p className="text-gray-600 font-mono text-lg">1516179/A/A/P/000</p>
+                        <p className="text-gray-600 font-mono text-lg" style={{dir:"ltr",textAlign:"right"}}>1516179/A/A/P/000</p>
                       </div>
                     </div>
                   </CardContent>
